@@ -8,3 +8,7 @@ class InvalidIngredientName(FrigoError):
 
 class InvalidQuantity(FrigoError):
     pass
+
+
+class IngredientNotFound(FrigoError):
+    pass

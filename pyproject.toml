@@ -7,7 +7,9 @@ authors = [
     { name = "Thibault Djaballah", email = "thibault.djaballah@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "dependency-injector>=4.49.1",
+]
 
 [build-system]
 requires = ["uv_build>=0.12.18,<0.13.0"]
