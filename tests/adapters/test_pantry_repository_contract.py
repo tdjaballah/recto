@@ -1,13 +1,18 @@
+from pathlib import Path
+
 import pytest
 
 from frigo.adapters.in_memory_pantry_repository import InMemoryPantryRepository
+from frigo.adapters.sqlite_pantry_repository import SqlitePantryRepository
 from frigo.ports.pantry_repository import PantryRepository
 from tests.object_mothers.ingredient import IngredientMother
 
 
-@pytest.fixture
-def repo() -> PantryRepository:
-    return InMemoryPantryRepository()
+@pytest.fixture(params=["in_memory", "sqlite"])
+def repo(request: pytest.FixtureRequest, tmp_path: Path) -> PantryRepository:
+    if request.param == "in_memory":
+        return InMemoryPantryRepository()
+    return SqlitePantryRepository(tmp_path / "frigo.db")
 
 
 def test_saved_ingredient_is_found_by_name(repo: PantryRepository) -> None:

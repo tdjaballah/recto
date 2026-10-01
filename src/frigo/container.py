@@ -1,6 +1,8 @@
+from pathlib import Path
+
 from dependency_injector import containers, providers
 
-from frigo.adapters.in_memory_pantry_repository import InMemoryPantryRepository
+from frigo.adapters.sqlite_pantry_repository import SqlitePantryRepository
 from frigo.adapters.system_clock import SystemClock
 from frigo.ports.clock import Clock
 from frigo.ports.pantry_repository import PantryRepository
@@ -10,7 +12,11 @@ from frigo.use_cases.remove_ingredient import RemoveIngredient
 
 
 class Container(containers.DeclarativeContainer):
-    pantry_repository: providers.Provider[PantryRepository] = providers.Singleton(InMemoryPantryRepository)
+    config = providers.Configuration()
+
+    pantry_repository: providers.Provider[PantryRepository] = providers.Singleton(
+        SqlitePantryRepository, path=config.db_path.as_(Path)
+    )
     clock: providers.Provider[Clock] = providers.Singleton(SystemClock)
 
     add_ingredient = providers.Factory(AddIngredient, pantry=pantry_repository)
