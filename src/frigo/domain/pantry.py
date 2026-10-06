@@ -2,6 +2,8 @@ from datetime import date
 
 from frigo.domain.ingredient import Ingredient
 
+URGENT_WITHIN_DAYS = 3
+
 
 def expired(ingredients: list[Ingredient], today: date) -> list[Ingredient]:
     return [ingredient for ingredient in ingredients if ingredient.is_expired(today)]
@@ -12,3 +14,7 @@ def fresh(ingredients: list[Ingredient], today: date) -> list[Ingredient]:
     return sorted(
         kept, key=lambda ingredient: (ingredient.expires_on is None, ingredient.expires_on or date.max, ingredient.name)
     )
+
+
+def urgent(ingredients: list[Ingredient], today: date) -> list[Ingredient]:
+    return [ingredient for ingredient in ingredients if ingredient.expires_within(today, URGENT_WITHIN_DAYS)]
