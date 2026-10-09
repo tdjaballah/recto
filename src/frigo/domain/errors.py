@@ -14,6 +14,10 @@ class IngredientNotFound(FrigoError):
     pass
 
 
+class EmptyPantry(FrigoError):
+    pass
+
+
 class ChefUnavailable(FrigoError):
     pass
 
