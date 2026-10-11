@@ -25,9 +25,9 @@ frigo remove rice
 
 The fridge lives in `~/.frigo.db` (override with `FRIGO_DB`).
 
-## The chef
+## Choose the chef
 
-The chef is a model running on your machine with [Ollama](https://ollama.com). Nothing leaves your computer and no account is needed:
+By default the chef is a model running on your machine with [Ollama](https://ollama.com). Nothing leaves your computer and no account is needed:
 
 ```bash
 ollama serve
@@ -41,7 +41,19 @@ docker run -d --name ollama -p 11434:11434 -v ollama:/root/.ollama alpine/ollama
 docker exec ollama ollama pull qwen2.5:1.5b
 ```
 
-Ollama is expected at `http://localhost:11434` (override with `FRIGO_OLLAMA_URL`) and the model defaults to `qwen2.5:1.5b` (override with `FRIGO_OLLAMA_MODEL`).
+To let OpenAI cook instead:
+
+```bash
+export FRIGO_CHEF=openai
+export OPENAI_API_KEY=...
+```
+
+| Variable | Default | |
+|---|---|---|
+| `FRIGO_CHEF` | `ollama` | `ollama` or `openai` |
+| `FRIGO_OLLAMA_URL` | `http://localhost:11434` | Where Ollama listens |
+| `FRIGO_OLLAMA_MODEL` | `qwen2.5:1.5b` | Any model pulled in Ollama |
+| `FRIGO_OPENAI_MODEL` | `gpt-5.4-mini` | Any OpenAI model with structured outputs |
 
 ## How the code is organized
 
@@ -50,7 +62,7 @@ src/frigo/
   domain/      rules: ingredients, expiry, what makes a recipe acceptable
   ports/       what the app needs from outside: a pantry, a chef, a clock
   use_cases/   one class per action: add, remove, list, suggest a recipe
-  adapters/    SQLite, the Ollama chef, the system clock, an in-memory pantry
+  adapters/    SQLite, the Ollama and OpenAI chefs, the system clock, an in-memory pantry
   cli/         Typer commands: parse, call a use case, print
   container.py the one place where adapters are plugged into ports
 ```
