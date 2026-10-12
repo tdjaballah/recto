@@ -79,4 +79,19 @@ uv run ty check
 uv run pytest
 ```
 
-Domain and use case tests run against fakes. The SQLite and in-memory pantries share one contract test module. CLI tests stub the use cases and only check parsing, output and exit codes.
+Each layer gets the cheapest test that gives real confidence:
+
+| Layer | Test | Uses |
+|---|---|---|
+| Domain | Unit | Nothing, the rules are pure functions |
+| Use cases | Unit | The production container with fakes plugged in (`tests/container.py`) |
+| CLI | Contract | Stubbed use cases: only parsing, output and exit codes are checked |
+| Adapters | Integration | A temporary SQLite file, and a real model in Docker for the chefs |
+
+The SQLite and in-memory pantries share one contract test module, so the fake used everywhere else behaves like the real one.
+
+The two chefs share one contract test module too. It runs against a small model served by Ollama, started with [Testcontainers](https://testcontainers.com): the Ollama chef through Ollama's own API, the OpenAI chef through its OpenAI-compatible one. These are the only tests that need Docker, and the only slow ones. To skip them:
+
+```bash
+uv run pytest -m "not container"
+```
