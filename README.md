@@ -10,6 +10,8 @@ The model is never trusted: a recipe that uses ingredients I don't have, or igno
 uv tool install git+https://github.com/tdjaballah/frigo
 ```
 
+Each tagged version also has its wheel attached to a [GitHub release](https://github.com/tdjaballah/frigo/releases).
+
 ## Use
 
 ```bash
@@ -94,4 +96,13 @@ The two chefs share one contract test module too. It runs against a small model 
 
 ```bash
 uv run pytest -m "not container"
+```
+
+## Release
+
+Every push builds the wheel in CI. Pushing a tag publishes it as a GitHub release:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
 ```
