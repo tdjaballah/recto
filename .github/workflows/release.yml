@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
+      - name: Check the tag matches the version in pyproject.toml
+        run: test "$GITHUB_REF_NAME" = "v$(uv version --short)"
       - run: uv build
       - run: gh release create "$GITHUB_REF_NAME" dist/* --generate-notes
         env:

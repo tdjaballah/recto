@@ -1,22 +1,18 @@
 [project]
-name = "frigo"
+name = "recto"
 version = "0.1.0"
-description = "Cook what is already in your fridge"
+description = "Learn things by heart with flashcards in the terminal"
 readme = "README.md"
 authors = [
     { name = "Thibault Djaballah", email = "thibault.djaballah@gmail.com" }
 ]
 requires-python = ">=3.13"
 dependencies = [
-    "dependency-injector>=4.49.1",
-    "ollama>=0.6.3",
-    "openai>=3.29.0",
-    "pydantic>=2.14.1",
-    "typer>=0.27.3",
+    "textual>=8.2.8",
 ]
 
 [project.scripts]
-frigo = "frigo.main:main"
+recto = "recto.app:main"
 
 [build-system]
 requires = ["uv_build>=0.12.18,<0.13.0"]
@@ -25,8 +21,8 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
     "ruff>=0.17.0",
-    "testcontainers[ollama]>=4.15.0",
     "ty>=0.0.86",
 ]
 
@@ -39,4 +35,4 @@ select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "ANN"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-markers = ["container: needs Docker, starts a real service with Testcontainers"]
+asyncio_mode = "auto"
