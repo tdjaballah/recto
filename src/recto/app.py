@@ -1,18 +1,12 @@
-from typing import ClassVar
+from pathlib import Path
 
-from textual.app import App, ComposeResult
-from textual.binding import BindingType
-from textual.widgets import Footer, Header
+from platformdirs import user_data_dir
 
-
-class RectoApp(App):
-    TITLE = "Recto"
-    BINDINGS: ClassVar[list[BindingType]] = [("q", "quit", "Quit")]
-
-    def compose(self) -> ComposeResult:
-        yield Header()
-        yield Footer()
+from recto.container import Container
+from recto.tui.app import RectoApp
 
 
 def main() -> None:
-    RectoApp().run()
+    container = Container()
+    container.config.db_path.from_env("RECTO_DB", default=str(Path(user_data_dir("recto")) / "recto.db"))
+    RectoApp(container).run()
