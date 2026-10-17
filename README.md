@@ -1,5 +1,10 @@
 # recto
 
+[![CI](https://github.com/tdjaballah/recto/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/tdjaballah/recto/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/recto)](https://pypi.org/project/recto/)
+[![Python](https://img.shields.io/pypi/pyversions/recto)](https://pypi.org/project/recto/)
+[![License](https://img.shields.io/github/license/tdjaballah/recto)](https://github.com/tdjaballah/recto/blob/main/LICENSE)
+
 A terminal app, in the spirit of Anki, to learn things by heart with flashcards.
 
 A deck holds only question/answer pairs. When it is imported, a model writes variants of every card: the question asked the other way round when that makes sense, and a few rephrasings. Each review asks one variant at random, so you learn the knowledge, not one wording. You type the answer, the model scores it and says what was missing, and [FSRS](https://github.com/open-spaced-repetition/py-fsrs) decides when the card comes back.
