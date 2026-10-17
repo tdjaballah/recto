@@ -9,17 +9,24 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.0
       - run: uv sync --locked
       - run: uv run ruff format --check .
       - run: uv run ruff check .
       - run: uv run ty check
-      - run: uv run pytest
+      - run: uv run pytest --junitxml=junit.xml -o junit_family=xunit1
+      - uses: mikepenz/action-junit-report@v6.6.1
+        if: ${{ !cancelled() }}
+        with:
+          report_paths: junit.xml
+          annotate_only: true
+          detailed_summary: true
+          include_passed: true
 
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.0
       - run: uv build
