@@ -8,12 +8,14 @@ from textual.widgets.option_list import Option
 
 from recto.container import Container
 from recto.tui.importing import ImportScreen
+from recto.tui.knowledge_list import KnowledgeListScreen
 from recto.tui.review import ReviewScreen
 from recto.use_cases.list_decks import DeckSummary
 
 
 class DecksScreen(Screen[None]):
     BINDINGS: ClassVar[list[BindingType]] = [
+        ("v", "variants", "Variants"),
         ("i", "import", "Import"),
         ("q", "app.quit", "Quit"),
     ]
@@ -41,6 +43,11 @@ class DecksScreen(Screen[None]):
     def on_option_list_option_selected(self, event: OptionList.OptionSelected) -> None:
         if event.option.id:
             self.app.push_screen(ReviewScreen(self._container, event.option.id))
+
+    def action_variants(self) -> None:
+        option = self.query_one("#decks", OptionList).highlighted_option
+        if option and option.id:
+            self.app.push_screen(KnowledgeListScreen(self._container, option.id))
 
     def action_import(self) -> None:
         self.app.push_screen(ImportScreen(self._container))

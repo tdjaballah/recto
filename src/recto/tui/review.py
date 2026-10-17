@@ -9,12 +9,14 @@ from textual.widgets import Footer, Header, Input, LoadingIndicator, Static
 from recto.container import Container
 from recto.domain.errors import ModelUnavailable
 from recto.domain.grading import Grade
+from recto.tui.variants import VariantsScreen
 from recto.use_cases.next_card import Question
 
 
 class ReviewScreen(Screen[None]):
     BINDINGS: ClassVar[list[BindingType]] = [
         Binding("enter", "next", "Next"),
+        Binding("v", "variants", "Variants"),
         Binding("escape", "app.pop_screen", "Back"),
     ]
 
@@ -40,7 +42,7 @@ class ReviewScreen(Screen[None]):
         self._ask()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        if action == "next":
+        if action in ("next", "variants"):
             return self._graded
         return True
 
@@ -54,6 +56,10 @@ class ReviewScreen(Screen[None]):
 
     def action_next(self) -> None:
         self._ask()
+
+    def action_variants(self) -> None:
+        if self._question:
+            self.app.push_screen(VariantsScreen(self._container, self._deck_id, self._question.knowledge.id))
 
     def _ask(self) -> None:
         question = self._container.next_card().execute(self._deck_id)

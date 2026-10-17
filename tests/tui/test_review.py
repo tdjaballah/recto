@@ -7,6 +7,7 @@ from recto.domain.grading import Grade
 from recto.tui.app import RectoApp
 from recto.tui.decks import DecksScreen
 from recto.tui.review import ReviewScreen
+from recto.tui.variants import VariantsScreen
 from tests.container import build_test_container
 from tests.fakes.fake_answer_judge import FakeAnswerJudge
 from tests.object_mothers.knowledge import KnowledgeMother
@@ -102,3 +103,19 @@ async def test_session_ends_when_nothing_is_left() -> None:
         await pilot.press("enter")
 
         assert isinstance(app.screen, DecksScreen)
+
+
+async def test_variants_of_the_knowledge_just_asked_open_after_grading() -> None:
+    app, _, judge = setup()
+    judge.will_grade(Grade(1.0, "Exact."))
+
+    async with app.run_test() as pilot:
+        await pilot.press("enter", "v")
+        assert app.screen.query_one("#answer", Input).value == "v"
+
+        await pilot.press("backspace", *"paris", "enter")
+        await app.workers.wait_for_complete()
+        await pilot.pause()
+        await pilot.press("v")
+
+        assert isinstance(app.screen, VariantsScreen)
