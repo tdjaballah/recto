@@ -39,6 +39,7 @@ async def test_variants_of_a_knowledge_are_listed() -> None:
         await pilot.press("c", "enter")
 
         assert isinstance(app.screen, VariantsScreen)
+        assert app.screen.sub_title == "Capitale de la France ?"
         options = app.screen.query_one("#variants", OptionList)
         assert options.option_count == 2
         assert str(options.get_option_at_index(0).prompt).endswith("(original)")

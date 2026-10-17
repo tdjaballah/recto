@@ -4,6 +4,7 @@ from textual.widgets import OptionList, Static
 from recto.adapters.in_memory_deck_repository import InMemoryDeckRepository
 from recto.domain.deck import Deck
 from recto.tui.app import RectoApp
+from recto.tui.knowledge_list import KnowledgeListScreen
 from tests.container import build_test_container
 from tests.object_mothers.knowledge import KnowledgeMother
 
@@ -49,6 +50,17 @@ async def test_long_descriptions_are_cut_so_the_counts_line_up() -> None:
         prompts = [str(decks.get_option_at_index(index).prompt) for index in range(2)]
         assert prompts[0].index("to review") == prompts[1].index("to review")
         assert "…" in prompts[0]
+
+
+async def test_cards_of_a_deck_are_shown_under_its_name() -> None:
+    app, repository = setup()
+    repository.save_deck(Deck("geographie", "Géographie", "Capitales"), [KnowledgeMother.new().build()])
+
+    async with app.run_test() as pilot:
+        await pilot.press("c")
+
+        assert isinstance(app.screen, KnowledgeListScreen)
+        assert app.screen.sub_title == "Géographie"
 
 
 async def test_q_quits() -> None:

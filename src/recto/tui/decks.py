@@ -8,6 +8,7 @@ from textual.widgets import Footer, Header, OptionList, Static
 from textual.widgets.option_list import Option
 
 from recto.container import Container
+from recto.domain.deck import Deck
 from recto.tui.importing import ImportScreen
 from recto.tui.knowledge_list import KnowledgeListScreen
 from recto.tui.review import ReviewScreen
@@ -24,6 +25,7 @@ class DecksScreen(Screen[None]):
     def __init__(self, container: Container) -> None:
         super().__init__()
         self._container = container
+        self._decks: dict[str, Deck] = {}
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -33,6 +35,7 @@ class DecksScreen(Screen[None]):
 
     def on_screen_resume(self) -> None:
         summaries = self._container.list_decks().execute()
+        self._decks = {summary.deck.id: summary.deck for summary in summaries}
         decks = self.query_one("#decks", OptionList)
         highlighted = decks.highlighted or 0
         decks.clear_options()
@@ -43,12 +46,12 @@ class DecksScreen(Screen[None]):
 
     def on_option_list_option_selected(self, event: OptionList.OptionSelected) -> None:
         if event.option.id:
-            self.app.push_screen(ReviewScreen(self._container, event.option.id))
+            self.app.push_screen(ReviewScreen(self._container, self._decks[event.option.id]))
 
     def action_cards(self) -> None:
         option = self.query_one("#decks", OptionList).highlighted_option
         if option and option.id:
-            self.app.push_screen(KnowledgeListScreen(self._container, option.id))
+            self.app.push_screen(KnowledgeListScreen(self._container, self._decks[option.id]))
 
     def action_import(self) -> None:
         self.app.push_screen(ImportScreen(self._container))

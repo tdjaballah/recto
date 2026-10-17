@@ -32,6 +32,7 @@ async def test_question_is_asked() -> None:
         await pilot.press("enter")
 
         assert isinstance(app.screen, ReviewScreen)
+        assert app.screen.sub_title == "Géographie"
         assert text(app, "#question") == "Capitale de la France ?"
         assert text(app, "#progress") == "0 to review · 1 new"
 

@@ -7,6 +7,7 @@ from textual.screen import Screen
 from textual.widgets import Footer, Header, Input, LoadingIndicator, Static
 
 from recto.container import Container
+from recto.domain.deck import Deck
 from recto.domain.errors import ModelUnavailable
 from recto.domain.grading import Grade
 from recto.use_cases.next_card import Question
@@ -18,10 +19,11 @@ class ReviewScreen(Screen[None]):
         Binding("escape", "app.pop_screen", "Back"),
     ]
 
-    def __init__(self, container: Container, deck_id: str) -> None:
+    def __init__(self, container: Container, deck: Deck) -> None:
         super().__init__()
         self._container = container
-        self._deck_id = deck_id
+        self._deck = deck
+        self.sub_title = deck.name
         self._question: Question | None = None
         self._graded = False
 
@@ -56,7 +58,7 @@ class ReviewScreen(Screen[None]):
         self._ask()
 
     def _ask(self) -> None:
-        question = self._container.next_card().execute(self._deck_id)
+        question = self._container.next_card().execute(self._deck.id)
         if question is None:
             self.app.notify("Nothing to review")
             self.app.pop_screen()
@@ -76,7 +78,7 @@ class ReviewScreen(Screen[None]):
     def _judge(self, question: Question, answer: str) -> None:
         try:
             grade = self._container.submit_answer().execute(
-                self._deck_id, question.knowledge.id, question.variant.id, answer
+                self._deck.id, question.knowledge.id, question.variant.id, answer
             )
         except ModelUnavailable as error:
             self.app.call_from_thread(self._failed, str(error))

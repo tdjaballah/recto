@@ -33,13 +33,14 @@ class VariantsScreen(Screen[None]):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Static(self._knowledge_id, id="title", markup=False)
         yield OptionList(id="variants", markup=False)
         yield Static("", id="status", markup=False)
         yield Footer()
 
     def on_mount(self) -> None:
-        self._show(self._container.get_knowledge().execute(self._deck_id, self._knowledge_id))
+        knowledge = self._container.get_knowledge().execute(self._deck_id, self._knowledge_id)
+        self.sub_title = knowledge.original.question
+        self._show(knowledge)
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         if self._generating and action in ("new", "edit", "delete", "generate"):
