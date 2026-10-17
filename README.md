@@ -69,7 +69,7 @@ make check
 
 ## Release
 
-Every push builds the wheel in CI. Pushing a tag that matches the version in `pyproject.toml` publishes it as a GitHub release:
+Every push builds the wheel in CI. Pushing a tag on a commit of `main` that matches the version in `pyproject.toml` publishes it as a GitHub release:
 
 ```bash
 uv version --bump minor
