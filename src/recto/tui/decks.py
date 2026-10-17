@@ -16,7 +16,7 @@ from recto.use_cases.list_decks import DeckSummary
 
 class DecksScreen(Screen[None]):
     BINDINGS: ClassVar[list[BindingType]] = [
-        ("v", "variants", "Variants"),
+        ("c", "cards", "Cards"),
         ("i", "import", "Import"),
         ("q", "app.quit", "Quit"),
     ]
@@ -45,7 +45,7 @@ class DecksScreen(Screen[None]):
         if event.option.id:
             self.app.push_screen(ReviewScreen(self._container, event.option.id))
 
-    def action_variants(self) -> None:
+    def action_cards(self) -> None:
         option = self.query_one("#decks", OptionList).highlighted_option
         if option and option.id:
             self.app.push_screen(KnowledgeListScreen(self._container, option.id))

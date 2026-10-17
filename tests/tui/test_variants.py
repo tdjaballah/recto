@@ -36,7 +36,7 @@ async def test_variants_of_a_knowledge_are_listed() -> None:
     app, _, _ = setup()
 
     async with app.run_test() as pilot:
-        await pilot.press("v", "enter")
+        await pilot.press("c", "enter")
 
         assert isinstance(app.screen, VariantsScreen)
         options = app.screen.query_one("#variants", OptionList)
@@ -48,7 +48,7 @@ async def test_variant_is_deleted_after_confirmation() -> None:
     app, repository, _ = setup()
 
     async with app.run_test() as pilot:
-        await pilot.press("v", "enter", "down", "d", "y")
+        await pilot.press("c", "enter", "down", "d", "y")
 
         assert variant_ids(repository) == [ORIGINAL]
 
@@ -57,7 +57,7 @@ async def test_deletion_can_be_cancelled() -> None:
     app, repository, _ = setup()
 
     async with app.run_test() as pilot:
-        await pilot.press("v", "enter", "down", "d", "n")
+        await pilot.press("c", "enter", "down", "d", "n")
 
         assert variant_ids(repository) == [ORIGINAL, "rephrased"]
 
@@ -66,7 +66,7 @@ async def test_original_cannot_be_deleted() -> None:
     app, repository, _ = setup()
 
     async with app.run_test() as pilot:
-        await pilot.press("v", "enter", "d", "y")
+        await pilot.press("c", "enter", "d", "y")
 
         assert variant_ids(repository) == [ORIGINAL, "rephrased"]
 
@@ -75,7 +75,7 @@ async def test_new_variant_is_written_in_a_form() -> None:
     app, repository, _ = setup()
 
     async with app.run_test() as pilot:
-        await pilot.press("v", "enter", "n", *"Capitale ?", "enter", *"Paris", "enter")
+        await pilot.press("c", "enter", "n", *"Capitale ?", "enter", *"Paris", "enter")
 
         knowledge = repository.get_knowledge("geographie", "france")
         assert knowledge is not None
@@ -86,7 +86,7 @@ async def test_variant_is_edited_in_a_form() -> None:
     app, repository, _ = setup()
 
     async with app.run_test() as pilot:
-        await pilot.press("v", "enter", "down", "e", "enter", *" (75)", "enter")
+        await pilot.press("c", "enter", "down", "e", "enter", *" (75)", "enter")
 
         knowledge = repository.get_knowledge("geographie", "france")
         assert knowledge is not None
@@ -97,7 +97,7 @@ async def test_blank_variant_is_refused() -> None:
     app, repository, _ = setup()
 
     async with app.run_test() as pilot:
-        await pilot.press("v", "enter", "n", "enter", "enter")
+        await pilot.press("c", "enter", "n", "enter", "enter")
 
         assert "needs a question and an answer" in str(app.screen.query_one("#status", Static).content)
         assert variant_ids(repository) == [ORIGINAL, "rephrased"]
@@ -107,7 +107,7 @@ async def test_variant_is_generated() -> None:
     app, repository, _ = setup()
 
     async with app.run_test() as pilot:
-        await pilot.press("v", "enter", "g")
+        await pilot.press("c", "enter", "g")
         await app.workers.wait_for_complete()
         await pilot.pause()
 
@@ -120,7 +120,7 @@ async def test_failed_generation_is_reported() -> None:
     generator.fails_after(0)
 
     async with app.run_test() as pilot:
-        await pilot.press("v", "enter", "g")
+        await pilot.press("c", "enter", "g")
         await app.workers.wait_for_complete()
         await pilot.pause()
 
@@ -133,7 +133,7 @@ async def test_variants_cannot_change_while_one_is_generated() -> None:
     generator.pause()
 
     async with app.run_test() as pilot:
-        await pilot.press("v", "enter", "g", "n")
+        await pilot.press("c", "enter", "g", "n")
 
         assert isinstance(app.screen, VariantsScreen)
 
