@@ -36,7 +36,19 @@ async def test_decks_show_what_is_left_today() -> None:
     async with app.run_test():
         prompt = str(app.screen.query_one("#decks", OptionList).get_option_at_index(0).prompt)
         assert prompt.startswith("Géographie")
-        assert prompt.endswith("1 ·  0 ✦")
+        assert prompt.endswith("1 to review ·  0 new")
+
+
+async def test_long_descriptions_are_cut_so_the_counts_line_up() -> None:
+    app, repository = setup()
+    repository.save_deck(Deck("anglais", "Anglais", "Vocabulaire courant, faux amis et verbes irréguliers"), [])
+    repository.save_deck(Deck("geographie", "Géographie", "Capitales"), [])
+
+    async with app.run_test():
+        decks = app.screen.query_one("#decks", OptionList)
+        prompts = [str(decks.get_option_at_index(index).prompt) for index in range(2)]
+        assert prompts[0].index("to review") == prompts[1].index("to review")
+        assert "…" in prompts[0]
 
 
 async def test_q_quits() -> None:

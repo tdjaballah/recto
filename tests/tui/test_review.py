@@ -34,7 +34,7 @@ async def test_question_is_asked() -> None:
 
         assert isinstance(app.screen, ReviewScreen)
         assert text(app, "#question") == "Capitale de la France ?"
-        assert text(app, "#progress") == "1 left"
+        assert text(app, "#progress") == "0 to review · 1 new"
 
 
 async def test_typed_answer_is_graded_and_the_reference_shown() -> None:

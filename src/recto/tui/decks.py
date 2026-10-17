@@ -1,3 +1,4 @@
+from textwrap import shorten
 from typing import ClassVar
 
 from textual.app import ComposeResult
@@ -54,4 +55,5 @@ class DecksScreen(Screen[None]):
 
 
 def _line(summary: DeckSummary) -> str:
-    return f"{summary.deck.name:<14}{summary.deck.description:<40}{summary.to_review:>4} · {summary.new:>2} ✦"
+    description = shorten(summary.deck.description, 38, placeholder="…")
+    return f"{summary.deck.name:<14}{description:<40}{summary.to_review:>4} to review · {summary.new:>2} new"
