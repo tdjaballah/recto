@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "fsrs>=6.3.2",
     "textual>=8.2.8",
 ]
 
