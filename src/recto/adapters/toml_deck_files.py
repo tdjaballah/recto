@@ -1,9 +1,16 @@
 import tomllib
+from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
 from recto.domain.deck import Deck, DeckFile, SourceCard
 from recto.domain.errors import InvalidDeck
+
+EXAMPLES = ("anglais", "geographie", "vins", "maths")
+
+
+def example_decks() -> list[DeckFile]:
+    return [parse_deck(name, (files("recto.decks") / f"{name}.toml").read_text(encoding="utf-8")) for name in EXAMPLES]
 
 
 def read_deck_file(raw_path: str) -> DeckFile:

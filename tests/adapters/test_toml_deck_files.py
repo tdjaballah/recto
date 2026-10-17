@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from recto.adapters.toml_deck_files import parse_deck, read_deck_file
+from recto.adapters.toml_deck_files import example_decks, parse_deck, read_deck_file
 from recto.domain.deck import Deck, SourceCard
 from recto.domain.errors import InvalidDeck
 
@@ -64,3 +64,10 @@ def test_missing_file_is_an_invalid_deck(tmp_path: Path) -> None:
 def test_unusable_path_is_an_invalid_deck(raw_path: str) -> None:
     with pytest.raises(InvalidDeck, match="Cannot read"):
         read_deck_file(raw_path)
+
+
+def test_example_decks_hold_fifty_cards_each() -> None:
+    decks = example_decks()
+
+    assert [deck_file.deck.id for deck_file in decks] == ["anglais", "geographie", "vins", "maths"]
+    assert all(len(deck_file.cards) == 50 for deck_file in decks)

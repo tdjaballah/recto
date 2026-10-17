@@ -1,0 +1,254 @@
+[deck]
+name = "Vins"
+description = "Cépages, appellations et régions viticoles françaises"
+instructions = "Réponds en français. Sois exigeant sur les cépages et les appellations, tolérant sur l'orthographe. Quand la réponse de référence contient plusieurs éléments, chaque élément compte dans le score."
+
+[[cards]]
+id = "chablis"
+question = "Quel cépage domine les vins blancs de Chablis ?"
+answer = "Chardonnay"
+
+[[cards]]
+id = "bourgogne-rouge"
+question = "Quel est le cépage des grands vins rouges de Bourgogne ?"
+answer = "Pinot noir"
+
+[[cards]]
+id = "beaujolais"
+question = "Quel cépage donne les vins du Beaujolais ?"
+answer = "Gamay"
+
+[[cards]]
+id = "sancerre-blanc"
+question = "Quel cépage donne le Sancerre blanc ?"
+answer = "Sauvignon blanc"
+
+[[cards]]
+id = "vouvray"
+question = "Quel cépage donne le Vouvray ?"
+answer = "Chenin blanc"
+
+[[cards]]
+id = "muscadet"
+question = "Quel cépage donne le Muscadet ?"
+answer = "Melon de Bourgogne"
+
+[[cards]]
+id = "condrieu"
+question = "Quel cépage donne le Condrieu ?"
+answer = "Viognier"
+
+[[cards]]
+id = "hermitage-rouge"
+question = "Quel cépage donne l'Hermitage rouge ?"
+answer = "Syrah"
+
+[[cards]]
+id = "cote-rotie"
+question = "Quel cépage rouge domine la Côte-Rôtie, et quel cépage blanc peut y être ajouté ?"
+answer = "Syrah, avec un peu de viognier"
+
+[[cards]]
+id = "chateauneuf"
+question = "Quel cépage domine la plupart des Châteauneuf-du-Pape rouges ?"
+answer = "Grenache"
+
+[[cards]]
+id = "pauillac"
+question = "Quel cépage domine les vins de Pauillac ?"
+answer = "Cabernet sauvignon"
+
+[[cards]]
+id = "pomerol"
+question = "Quel cépage domine les vins de Pomerol ?"
+answer = "Merlot"
+
+[[cards]]
+id = "saint-emilion"
+question = "Quels sont les deux cépages principaux de Saint-Émilion ?"
+answer = "Merlot et cabernet franc"
+
+[[cards]]
+id = "chinon"
+question = "Quel cépage donne le Chinon rouge ?"
+answer = "Cabernet franc"
+
+[[cards]]
+id = "madiran"
+question = "Quel cépage domine le Madiran ?"
+answer = "Tannat"
+
+[[cards]]
+id = "cahors"
+question = "Quel cépage domine le Cahors ?"
+answer = "Malbec, appelé aussi côt"
+
+[[cards]]
+id = "bandol"
+question = "Quel cépage domine le Bandol rouge ?"
+answer = "Mourvèdre"
+
+[[cards]]
+id = "sauternes"
+question = "Quels cépages composent le Sauternes ?"
+answer = "Sémillon, sauvignon blanc et un peu de muscadelle"
+
+[[cards]]
+id = "sauternes-botrytis"
+question = "Quel champignon donne leur concentration aux raisins du Sauternes ?"
+answer = "Le Botrytis cinerea, la pourriture noble"
+
+[[cards]]
+id = "jurancon"
+question = "Quels sont les cépages principaux du Jurançon ?"
+answer = "Petit manseng et gros manseng"
+
+[[cards]]
+id = "vin-jaune"
+question = "Quel cépage donne le vin jaune du Jura ?"
+answer = "Savagnin"
+
+[[cards]]
+id = "vin-jaune-elevage"
+question = "Combien de temps le vin jaune est-il élevé sous voile au minimum ?"
+answer = "Six ans et trois mois"
+
+[[cards]]
+id = "vin-jaune-bouteille"
+question = "Comment s'appelle la bouteille du vin jaune et quelle est sa contenance ?"
+answer = "Le clavelin, 62 cl"
+
+[[cards]]
+id = "alsace-cepages-nobles"
+question = "Quels sont les quatre cépages nobles d'Alsace ?"
+answer = "Riesling, gewurztraminer, pinot gris et muscat"
+
+[[cards]]
+id = "champagne-cepages"
+question = "Quels sont les trois principaux cépages de la Champagne ?"
+answer = "Chardonnay, pinot noir et pinot meunier"
+
+[[cards]]
+id = "blanc-de-blancs"
+question = "Qu'est-ce qu'un champagne blanc de blancs ?"
+answer = "Un champagne fait uniquement de raisins blancs, en pratique du chardonnay"
+
+[[cards]]
+id = "blanc-de-noirs"
+question = "Qu'est-ce qu'un champagne blanc de noirs ?"
+answer = "Un champagne blanc fait uniquement de raisins noirs, pinot noir ou meunier"
+
+[[cards]]
+id = "methode-champenoise"
+question = "Comment s'appelle la méthode d'élaboration du champagne ?"
+answer = "La méthode traditionnelle, avec une seconde fermentation en bouteille"
+
+[[cards]]
+id = "brut-nature"
+question = "Que signifie « brut nature » sur une étiquette de champagne ?"
+answer = "Aucun sucre ajouté au dosage, moins de 3 g/L de sucre"
+
+[[cards]]
+id = "cote-des-blancs"
+question = "Quelle zone de la Champagne est réputée pour le chardonnay ?"
+answer = "La Côte des Blancs"
+
+[[cards]]
+id = "montagne-de-reims"
+question = "Quelle zone de la Champagne est réputée pour le pinot noir ?"
+answer = "La Montagne de Reims"
+
+[[cards]]
+id = "medoc-rive"
+question = "Sur quelle rive de la Gironde se trouve le Médoc ?"
+answer = "La rive gauche"
+
+[[cards]]
+id = "libournais-rive"
+question = "Sur quelle rive se trouvent Saint-Émilion et Pomerol ?"
+answer = "La rive droite, autour de Libourne"
+
+[[cards]]
+id = "graves-sol"
+question = "D'où vient le nom de l'appellation Graves ?"
+answer = "De ses sols de graves, des cailloux roulés et graviers"
+
+[[cards]]
+id = "classement-1855"
+question = "Quels vins le classement de 1855 a-t-il classés ?"
+answer = "Les rouges du Médoc, plus Haut-Brion, et les liquoreux de Sauternes et Barsac"
+
+[[cards]]
+id = "premiers-crus-1855"
+question = "Quels sont les cinq premiers grands crus classés rouges de 1855 aujourd'hui ?"
+answer = "Lafite Rothschild, Latour, Margaux, Haut-Brion et Mouton Rothschild"
+
+[[cards]]
+id = "mouton-1973"
+question = "En quelle année Mouton Rothschild est-il devenu premier grand cru classé ?"
+answer = "1973"
+
+[[cards]]
+id = "grand-cru-bourgogne"
+question = "Quel est le plus haut niveau de la hiérarchie bourguignonne ?"
+answer = "Grand cru"
+
+[[cards]]
+id = "climat"
+question = "Qu'est-ce qu'un « climat » en Bourgogne ?"
+answer = "Une parcelle de vigne précisément délimitée, avec son nom et ses conditions propres"
+
+[[cards]]
+id = "romanee-conti"
+question = "Dans quelle commune se trouve le grand cru La Romanée-Conti ?"
+answer = "Vosne-Romanée"
+
+[[cards]]
+id = "cote-de-nuits"
+question = "La Côte de Nuits est-elle surtout réputée pour ses rouges ou ses blancs ?"
+answer = "Ses rouges, de pinot noir"
+
+[[cards]]
+id = "montrachet"
+question = "Quel grand cru blanc est partagé entre Puligny-Montrachet et Chassagne-Montrachet ?"
+answer = "Le Montrachet"
+
+[[cards]]
+id = "crus-beaujolais"
+question = "Combien y a-t-il de crus du Beaujolais ?"
+answer = "Dix"
+
+[[cards]]
+id = "tavel"
+question = "Quelle est la particularité de l'appellation Tavel ?"
+answer = "Elle ne produit que du vin rosé"
+
+[[cards]]
+id = "provence-rose"
+question = "Quelle couleur de vin domine la production de Provence ?"
+answer = "Le rosé"
+
+[[cards]]
+id = "maceration-carbonique"
+question = "Quelle technique de vinification est typique du Beaujolais ?"
+answer = "La macération carbonique, avec des raisins entiers"
+
+[[cards]]
+id = "malolactique"
+question = "Que transforme la fermentation malolactique ?"
+answer = "L'acide malique en acide lactique, ce qui assouplit le vin"
+
+[[cards]]
+id = "tanins"
+question = "D'où viennent principalement les tanins d'un vin rouge ?"
+answer = "Des peaux, des pépins et des rafles du raisin, et du bois de la barrique"
+
+[[cards]]
+id = "aoc"
+question = "Que signifie AOC ?"
+answer = "Appellation d'origine contrôlée"
+
+[[cards]]
+id = "phylloxera"
+question = "Quel insecte a ravagé le vignoble français à la fin du XIXe siècle ?"
+answer = "Le phylloxéra"

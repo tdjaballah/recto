@@ -1,0 +1,254 @@
+[deck]
+name = "Anglais"
+description = "Vocabulaire courant, faux amis et verbes irréguliers"
+instructions = "Les questions sont en français. Les réponses attendues sont en anglais, sauf quand on demande le sens d'un mot anglais. Accepte les synonymes courants et l'orthographe britannique ou américaine."
+
+[[cards]]
+id = "apple"
+question = "Comment dit-on « pomme » en anglais ?"
+answer = "apple"
+
+[[cards]]
+id = "bread"
+question = "Comment dit-on « pain » en anglais ?"
+answer = "bread"
+
+[[cards]]
+id = "cheese"
+question = "Comment dit-on « fromage » en anglais ?"
+answer = "cheese"
+
+[[cards]]
+id = "butterfly"
+question = "Comment dit-on « papillon » en anglais ?"
+answer = "butterfly"
+
+[[cards]]
+id = "knife"
+question = "Comment dit-on « couteau » en anglais ?"
+answer = "knife"
+
+[[cards]]
+id = "spoon"
+question = "Comment dit-on « cuillère » en anglais ?"
+answer = "spoon"
+
+[[cards]]
+id = "library"
+question = "Comment dit-on « bibliothèque » en anglais ?"
+answer = "library"
+
+[[cards]]
+id = "bookshop"
+question = "Comment dit-on « librairie » en anglais ?"
+answer = "bookshop"
+
+[[cards]]
+id = "sheet"
+question = "Comment dit-on « drap » en anglais ?"
+answer = "sheet"
+
+[[cards]]
+id = "pillow"
+question = "Comment dit-on « oreiller » en anglais ?"
+answer = "pillow"
+
+[[cards]]
+id = "ceiling"
+question = "Comment dit-on « plafond » en anglais ?"
+answer = "ceiling"
+
+[[cards]]
+id = "floor"
+question = "Comment dit-on « sol » (d'une pièce) en anglais ?"
+answer = "floor"
+
+[[cards]]
+id = "wardrobe"
+question = "Comment dit-on « armoire » en anglais ?"
+answer = "wardrobe"
+
+[[cards]]
+id = "drawer"
+question = "Comment dit-on « tiroir » en anglais ?"
+answer = "drawer"
+
+[[cards]]
+id = "sink"
+question = "Comment dit-on « évier » en anglais ?"
+answer = "sink"
+
+[[cards]]
+id = "tap"
+question = "Comment dit-on « robinet » en anglais britannique ?"
+answer = "tap"
+
+[[cards]]
+id = "faucet"
+question = "Comment dit-on « robinet » en anglais américain ?"
+answer = "faucet"
+
+[[cards]]
+id = "flat"
+question = "Comment dit-on « appartement » en anglais britannique ?"
+answer = "flat"
+
+[[cards]]
+id = "apartment"
+question = "Comment dit-on « appartement » en anglais américain ?"
+answer = "apartment"
+
+[[cards]]
+id = "lorry"
+question = "Comment dit-on « camion » en anglais britannique ?"
+answer = "lorry"
+
+[[cards]]
+id = "truck"
+question = "Comment dit-on « camion » en anglais américain ?"
+answer = "truck"
+
+[[cards]]
+id = "pavement"
+question = "Comment dit-on « trottoir » en anglais britannique ?"
+answer = "pavement"
+
+[[cards]]
+id = "sidewalk"
+question = "Comment dit-on « trottoir » en anglais américain ?"
+answer = "sidewalk"
+
+[[cards]]
+id = "queue"
+question = "Comment dit-on « file d'attente » en anglais britannique ?"
+answer = "queue"
+
+[[cards]]
+id = "rent"
+question = "Comment dit-on « loyer » en anglais ?"
+answer = "rent"
+
+[[cards]]
+id = "salary"
+question = "Comment dit-on « salaire » en anglais ?"
+answer = "salary"
+
+[[cards]]
+id = "skill"
+question = "Comment dit-on « compétence » en anglais ?"
+answer = "skill"
+
+[[cards]]
+id = "meeting"
+question = "Comment dit-on « réunion » en anglais ?"
+answer = "meeting"
+
+[[cards]]
+id = "deadline"
+question = "Comment dit-on « date limite » en anglais ?"
+answer = "deadline"
+
+[[cards]]
+id = "to-borrow"
+question = "Comment dit-on « emprunter » en anglais ?"
+answer = "to borrow"
+
+[[cards]]
+id = "to-lend"
+question = "Comment dit-on « prêter » en anglais ?"
+answer = "to lend"
+
+[[cards]]
+id = "to-achieve"
+question = "Comment dit-on « accomplir, atteindre (un objectif) » en anglais ?"
+answer = "to achieve"
+
+[[cards]]
+id = "to-improve"
+question = "Comment dit-on « améliorer » en anglais ?"
+answer = "to improve"
+
+[[cards]]
+id = "to-forget"
+question = "Comment dit-on « oublier » en anglais ?"
+answer = "to forget"
+
+[[cards]]
+id = "to-remind"
+question = "Comment dit-on « rappeler (quelque chose à quelqu'un) » en anglais ?"
+answer = "to remind"
+
+[[cards]]
+id = "to-wonder"
+question = "Comment dit-on « se demander » en anglais ?"
+answer = "to wonder"
+
+[[cards]]
+id = "to-avoid"
+question = "Comment dit-on « éviter » en anglais ?"
+answer = "to avoid"
+
+[[cards]]
+id = "to-grow"
+question = "Comment dit-on « grandir, pousser » en anglais ?"
+answer = "to grow"
+
+[[cards]]
+id = "actually"
+question = "Que signifie « actually » en français ?"
+answer = "en fait, en réalité"
+
+[[cards]]
+id = "eventually"
+question = "Que signifie « eventually » en français ?"
+answer = "finalement, à la longue"
+
+[[cards]]
+id = "sensible"
+question = "Que signifie « sensible » en français ?"
+answer = "raisonnable, sensé"
+
+[[cards]]
+id = "library-false-friend"
+question = "Que signifie « library » en français ?"
+answer = "bibliothèque"
+
+[[cards]]
+id = "currently"
+question = "Que signifie « currently » en français ?"
+answer = "actuellement"
+
+[[cards]]
+id = "to-attend"
+question = "Que signifie « to attend » en français ?"
+answer = "assister à"
+
+[[cards]]
+id = "to-pretend"
+question = "Que signifie « to pretend » en français ?"
+answer = "faire semblant"
+
+[[cards]]
+id = "go-past"
+question = "Quel est le prétérit de « to go » ?"
+answer = "went"
+
+[[cards]]
+id = "bring-past"
+question = "Quel est le prétérit de « to bring » ?"
+answer = "brought"
+
+[[cards]]
+id = "catch-past"
+question = "Quel est le prétérit de « to catch » ?"
+answer = "caught"
+
+[[cards]]
+id = "teach-past"
+question = "Quel est le prétérit de « to teach » ?"
+answer = "taught"
+
+[[cards]]
+id = "seek-past"
+question = "Quel est le prétérit de « to seek » ?"
+answer = "sought"
