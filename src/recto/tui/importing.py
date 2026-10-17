@@ -6,6 +6,7 @@ from textual.binding import BindingType
 from textual.screen import Screen
 from textual.widgets import Footer, Header, Input, Label, OptionList, Static
 from textual.widgets.option_list import Option
+from textual.worker import Worker, WorkerState
 
 from recto.adapters.toml_deck_files import example_decks, read_deck_file
 from recto.container import Container
@@ -60,7 +61,7 @@ class ImportScreen(Screen[None]):
         self._import(deck_file)
 
     @work(thread=True, exclusive=True)
-    def _import(self, deck_file: DeckFile) -> None:
+    def _import(self, deck_file: DeckFile) -> str | None:
         def progress(done: int, total: int) -> None:
             self.app.call_from_thread(self._show, f"Generating variants… {done}/{total}")
 
@@ -69,11 +70,15 @@ class ImportScreen(Screen[None]):
             report = self._container.import_deck().execute(deck_file, on_progress=progress)
         except ModelUnavailable as error:
             self.app.call_from_thread(self._failed, f"Import failed: {error}")
-            return
-        message = (
+            return None
+        return (
             f"{deck_file.deck.name}: {report.added} added, {report.regenerated} regenerated, {report.removed} deleted"
         )
-        self.app.call_from_thread(self._done, message)
+
+    def on_worker_state_changed(self, event: Worker.StateChanged) -> None:
+        if event.state == WorkerState.SUCCESS and event.worker.result is not None:
+            self.app.notify(event.worker.result)
+            self.app.pop_screen()
 
     def _show(self, message: str) -> None:
         self.query_one("#status", Static).update(message)
@@ -81,10 +86,6 @@ class ImportScreen(Screen[None]):
     def _failed(self, message: str) -> None:
         self._set_importing(False)
         self._show(message)
-
-    def _done(self, message: str) -> None:
-        self.app.notify(message)
-        self.app.pop_screen()
 
     def _set_importing(self, importing: bool) -> None:
         self._importing = importing
