@@ -8,6 +8,7 @@ from textual.widgets.option_list import Option
 
 from recto.container import Container
 from recto.tui.importing import ImportScreen
+from recto.tui.review import ReviewScreen
 from recto.use_cases.list_decks import DeckSummary
 
 
@@ -36,6 +37,10 @@ class DecksScreen(Screen[None]):
         if summaries:
             decks.highlighted = min(highlighted, len(summaries) - 1)
         self.query_one("#empty", Static).update("" if summaries else "No deck yet. Press i to import one.")
+
+    def on_option_list_option_selected(self, event: OptionList.OptionSelected) -> None:
+        if event.option.id:
+            self.app.push_screen(ReviewScreen(self._container, event.option.id))
 
     def action_import(self) -> None:
         self.app.push_screen(ImportScreen(self._container))
