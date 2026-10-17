@@ -3,7 +3,7 @@ from typing import ClassVar
 
 from textual import work
 from textual.app import ComposeResult
-from textual.binding import BindingType
+from textual.binding import Binding, BindingType
 from textual.containers import Vertical
 from textual.screen import ModalScreen, Screen
 from textual.widgets import Footer, Header, Input, Label, OptionList, Static
@@ -18,6 +18,7 @@ class VariantsScreen(Screen[None]):
     BINDINGS: ClassVar[list[BindingType]] = [
         ("n", "new", "New"),
         ("e", "edit", "Edit"),
+        Binding("enter", "edit", "Edit", show=False, priority=True),
         ("d", "delete", "Delete"),
         ("g", "generate", "Generate"),
         ("escape", "app.pop_screen", "Back"),
@@ -33,20 +34,21 @@ class VariantsScreen(Screen[None]):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Static(self._knowledge_id, id="title", markup=False)
         yield OptionList(id="variants", markup=False)
         yield Static("", id="status", markup=False)
         yield Footer()
 
     def on_mount(self) -> None:
-        self._show(self._container.get_knowledge().execute(self._deck_id, self._knowledge_id))
+        knowledge = self._container.get_knowledge().execute(self._deck_id, self._knowledge_id)
+        self.sub_title = knowledge.original.question
+        self._show(knowledge)
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         if self._generating and action in ("new", "edit", "delete", "generate"):
-            return False
+            return None
         if action in ("edit", "delete"):
             variant = self._highlighted()
-            return variant is not None and not variant.is_original
+            return None if variant is None or variant.is_original else True
         return True
 
     def on_option_list_option_highlighted(self, event: OptionList.OptionHighlighted) -> None:
@@ -57,7 +59,7 @@ class VariantsScreen(Screen[None]):
             if result:
                 self._change(lambda: self._container.add_variant().execute(self._deck_id, self._knowledge_id, *result))
 
-        self.app.push_screen(VariantForm(), add)
+        self.app.push_screen(VariantForm("New variant"), add)
 
     def action_edit(self) -> None:
         variant = self._highlighted()
@@ -72,7 +74,7 @@ class VariantsScreen(Screen[None]):
                     )
                 )
 
-        self.app.push_screen(VariantForm(variant.question, variant.answer), edit)
+        self.app.push_screen(VariantForm("Edit variant", variant.question, variant.answer), edit)
 
     def action_delete(self) -> None:
         variant = self._highlighted()
@@ -85,7 +87,7 @@ class VariantsScreen(Screen[None]):
                     lambda: self._container.delete_variant().execute(self._deck_id, self._knowledge_id, variant.id)
                 )
 
-        self.app.push_screen(Confirm("Delete this variant? (y/n)"), delete)
+        self.app.push_screen(Confirm("Delete this variant?", variant.question), delete)
 
     def action_generate(self) -> None:
         self._generating = True
@@ -134,43 +136,72 @@ class VariantsScreen(Screen[None]):
         return next((variant for variant in self._variants if option and variant.id == option.id), None)
 
 
-class VariantForm(ModalScreen[tuple[str, str] | None]):
-    BINDINGS: ClassVar[list[BindingType]] = [("escape", "cancel", "Cancel")]
+class Dialog[T](ModalScreen[T]):
+    DEFAULT_CSS = """
+    Dialog {
+        align: center middle;
+    }
+    Dialog > #dialog {
+        width: 80%;
+        height: auto;
+        padding: 1 2;
+        border: round $primary;
+        background: $surface;
+    }
+    """
 
-    def __init__(self, question: str = "", answer: str = "") -> None:
+    def __init__(self, title: str) -> None:
         super().__init__()
+        self._title = title
+
+    def on_mount(self) -> None:
+        self.query_one("#dialog").border_title = self._title
+
+
+class VariantForm(Dialog[tuple[str, str] | None]):
+    BINDINGS: ClassVar[list[BindingType]] = [
+        Binding("enter", "save", "Save", priority=True),
+        ("escape", "cancel", "Cancel"),
+    ]
+
+    def __init__(self, title: str, question: str = "", answer: str = "") -> None:
+        super().__init__(title)
         self._question = question
         self._answer = answer
 
     def compose(self) -> ComposeResult:
-        with Vertical():
+        with Vertical(id="dialog"):
             yield Label("Question")
             yield Input(self._question, id="question", select_on_focus=False)
             yield Label("Answer")
             yield Input(self._answer, id="answer", select_on_focus=False)
+        yield Footer()
 
-    def on_input_submitted(self, event: Input.Submitted) -> None:
-        if event.input.id == "question":
+    def action_save(self) -> None:
+        question = self.query_one("#question", Input)
+        if question.has_focus:
             self.query_one("#answer", Input).focus()
             return
-        self.dismiss((self.query_one("#question", Input).value, event.value))
+        self.dismiss((question.value, self.query_one("#answer", Input).value))
 
     def action_cancel(self) -> None:
         self.dismiss(None)
 
 
-class Confirm(ModalScreen[bool]):
+class Confirm(Dialog[bool]):
     BINDINGS: ClassVar[list[BindingType]] = [
         ("y", "answer(True)", "Yes"),
         ("n,escape", "answer(False)", "No"),
     ]
 
-    def __init__(self, message: str) -> None:
-        super().__init__()
+    def __init__(self, title: str, message: str) -> None:
+        super().__init__(title)
         self._message = message
 
     def compose(self) -> ComposeResult:
-        yield Static(self._message, markup=False)
+        with Vertical(id="dialog"):
+            yield Static(self._message, id="message", markup=False)
+        yield Footer()
 
     def action_answer(self, yes: bool) -> None:
         self.dismiss(yes)

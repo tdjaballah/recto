@@ -7,7 +7,6 @@ from recto.domain.grading import Grade
 from recto.tui.app import RectoApp
 from recto.tui.decks import DecksScreen
 from recto.tui.review import ReviewScreen
-from recto.tui.variants import VariantsScreen
 from tests.container import build_test_container
 from tests.fakes.fake_answer_judge import FakeAnswerJudge
 from tests.object_mothers.knowledge import KnowledgeMother
@@ -33,8 +32,9 @@ async def test_question_is_asked() -> None:
         await pilot.press("enter")
 
         assert isinstance(app.screen, ReviewScreen)
+        assert app.screen.sub_title == "Géographie"
         assert text(app, "#question") == "Capitale de la France ?"
-        assert text(app, "#progress") == "1 left"
+        assert text(app, "#progress") == "0 to review · 1 new"
 
 
 async def test_typed_answer_is_graded_and_the_reference_shown() -> None:
@@ -46,7 +46,7 @@ async def test_typed_answer_is_graded_and_the_reference_shown() -> None:
         await app.workers.wait_for_complete()
         await pilot.pause()
 
-        assert text(app, "#grade") == "✗ 50 %   Presque."
+        assert text(app, "#grade") == "~ 50 %   Presque."
         assert text(app, "#expected") == "Answer: Paris"
         assert judge.requests[0][1] == "paris"
         assert len(repository.reviews("geographie", "france")) == 1
@@ -105,17 +105,14 @@ async def test_session_ends_when_nothing_is_left() -> None:
         assert isinstance(app.screen, DecksScreen)
 
 
-async def test_variants_of_the_knowledge_just_asked_open_after_grading() -> None:
+async def test_variants_cannot_be_opened_from_a_review() -> None:
     app, _, judge = setup()
     judge.will_grade(Grade(1.0, "Exact."))
 
     async with app.run_test() as pilot:
-        await pilot.press("enter", "v")
-        assert app.screen.query_one("#answer", Input).value == "v"
-
-        await pilot.press("backspace", *"paris", "enter")
+        await pilot.press("enter", *"paris", "enter")
         await app.workers.wait_for_complete()
         await pilot.pause()
         await pilot.press("v")
 
-        assert isinstance(app.screen, VariantsScreen)
+        assert isinstance(app.screen, ReviewScreen)

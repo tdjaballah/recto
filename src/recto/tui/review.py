@@ -7,23 +7,25 @@ from textual.screen import Screen
 from textual.widgets import Footer, Header, Input, LoadingIndicator, Static
 
 from recto.container import Container
+from recto.domain.deck import Deck
 from recto.domain.errors import ModelUnavailable
-from recto.domain.grading import Grade
-from recto.tui.variants import VariantsScreen
+from recto.domain.grading import Grade, Rating, rating_for
 from recto.use_cases.next_card import Question
+
+MARKS = {Rating.GOOD: "✓", Rating.HARD: "~", Rating.AGAIN: "✗"}
 
 
 class ReviewScreen(Screen[None]):
     BINDINGS: ClassVar[list[BindingType]] = [
         Binding("enter", "next", "Next"),
-        Binding("v", "variants", "Variants"),
         Binding("escape", "app.pop_screen", "Back"),
     ]
 
-    def __init__(self, container: Container, deck_id: str) -> None:
+    def __init__(self, container: Container, deck: Deck) -> None:
         super().__init__()
         self._container = container
-        self._deck_id = deck_id
+        self._deck = deck
+        self.sub_title = deck.name
         self._question: Question | None = None
         self._graded = False
 
@@ -42,7 +44,7 @@ class ReviewScreen(Screen[None]):
         self._ask()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        if action in ("next", "variants"):
+        if action == "next":
             return self._graded
         return True
 
@@ -57,19 +59,15 @@ class ReviewScreen(Screen[None]):
     def action_next(self) -> None:
         self._ask()
 
-    def action_variants(self) -> None:
-        if self._question:
-            self.app.push_screen(VariantsScreen(self._container, self._deck_id, self._question.knowledge.id))
-
     def _ask(self) -> None:
-        question = self._container.next_card().execute(self._deck_id)
+        question = self._container.next_card().execute(self._deck.id)
         if question is None:
             self.app.notify("Nothing to review")
             self.app.pop_screen()
             return
         self._question = question
         self._set_graded(False)
-        self.query_one("#progress", Static).update(f"{question.remaining} left")
+        self.query_one("#progress", Static).update(f"{question.to_review} to review · {question.new} new")
         self.query_one("#question", Static).update(question.variant.question)
         self.query_one("#grade", Static).update("")
         self.query_one("#expected", Static).update("")
@@ -82,7 +80,7 @@ class ReviewScreen(Screen[None]):
     def _judge(self, question: Question, answer: str) -> None:
         try:
             grade = self._container.submit_answer().execute(
-                self._deck_id, question.knowledge.id, question.variant.id, answer
+                self._deck.id, question.knowledge.id, question.variant.id, answer
             )
         except ModelUnavailable as error:
             self.app.call_from_thread(self._failed, str(error))
@@ -93,7 +91,7 @@ class ReviewScreen(Screen[None]):
         if not self.is_attached:
             return
         self.query_one("#judging").display = False
-        mark = "✓" if grade.score == 1 else "✗"
+        mark = MARKS[rating_for(grade.score)]
         self.query_one("#grade", Static).update(f"{mark} {round(grade.score * 100)} %   {grade.comment}")
         self.query_one("#expected", Static).update(f"Answer: {question.variant.answer}")
         self._set_graded(True)

@@ -19,7 +19,7 @@ export OPENAI_API_KEY=...
 recto
 ```
 
-Press `i` to import a deck: one of the four examples (Anglais, Géographie, Vins, Maths, 50 cards each) or your own TOML file. Then pick a deck and press enter to review. After an answer is graded, `v` shows the variants of that card, where you can add, edit, delete or generate more.
+Press `i` to import a deck: one of the four examples (Anglais, Géographie, Vins, Maths, 50 cards each) or your own TOML file. Then pick a deck and press enter to review, or `c` to browse its cards: pick one to see its variants, where you can add, edit, delete or generate more.
 
 | Variable | Default | |
 |---|---|---|

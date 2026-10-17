@@ -11,7 +11,8 @@ from recto.ports.deck_repository import DeckRepository
 class Question:
     knowledge: Knowledge
     variant: Variant
-    remaining: int
+    to_review: int
+    new: int
 
 
 class NextCard:
@@ -20,8 +21,13 @@ class NextCard:
         self._clock = clock
 
     def execute(self, deck_id: str) -> Question | None:
-        queue = plan_today(self._repository.knowledge(deck_id), self._clock.now()).queue
-        if not queue:
+        today = plan_today(self._repository.knowledge(deck_id), self._clock.now())
+        if not today.queue:
             return None
-        knowledge = queue[0]
-        return Question(knowledge=knowledge, variant=random.choice(knowledge.variants), remaining=len(queue))
+        knowledge = today.queue[0]
+        return Question(
+            knowledge=knowledge,
+            variant=random.choice(knowledge.variants),
+            to_review=today.to_review,
+            new=len(today.new),
+        )
