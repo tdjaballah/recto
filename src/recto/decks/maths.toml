@@ -1,0 +1,254 @@
+[deck]
+name = "Maths"
+description = "Formules et résultats du lycée"
+instructions = "Réponds en français. Les réponses sont tapées en texte brut (a^2, pi, racine de 2) : accepte toute notation ou forme équivalente du même résultat. Quand la réponse de référence contient plusieurs éléments, chaque élément compte dans le score."
+
+[[cards]]
+id = "pythagore"
+question = "Que dit le théorème de Pythagore ?"
+answer = "Dans un triangle rectangle, le carré de l'hypoténuse est égal à la somme des carrés des deux autres côtés : a^2 + b^2 = c^2"
+
+[[cards]]
+id = "aire-disque"
+question = "Quelle est l'aire d'un disque de rayon r ?"
+answer = "pi r^2"
+
+[[cards]]
+id = "perimetre-cercle"
+question = "Quel est le périmètre d'un cercle de rayon r ?"
+answer = "2 pi r"
+
+[[cards]]
+id = "volume-sphere"
+question = "Quel est le volume d'une sphère de rayon r ?"
+answer = "4/3 pi r^3"
+
+[[cards]]
+id = "aire-sphere"
+question = "Quelle est l'aire d'une sphère de rayon r ?"
+answer = "4 pi r^2"
+
+[[cards]]
+id = "volume-cone"
+question = "Quel est le volume d'un cône de rayon r et de hauteur h ?"
+answer = "1/3 pi r^2 h"
+
+[[cards]]
+id = "aire-triangle"
+question = "Quelle est l'aire d'un triangle de base b et de hauteur h ?"
+answer = "b h / 2"
+
+[[cards]]
+id = "somme-angles"
+question = "Quelle est la somme des angles d'un triangle ?"
+answer = "180 degrés, soit pi radians"
+
+[[cards]]
+id = "identite-1"
+question = "Développe (a + b)^2."
+answer = "a^2 + 2ab + b^2"
+
+[[cards]]
+id = "identite-2"
+question = "Développe (a - b)^2."
+answer = "a^2 - 2ab + b^2"
+
+[[cards]]
+id = "identite-3"
+question = "Factorise a^2 - b^2."
+answer = "(a - b)(a + b)"
+
+[[cards]]
+id = "discriminant"
+question = "Quel est le discriminant de ax^2 + bx + c ?"
+answer = "b^2 - 4ac"
+
+[[cards]]
+id = "racines-second-degre"
+question = "Quelles sont les racines de ax^2 + bx + c quand le discriminant D est positif ?"
+answer = "(-b - racine de D) / 2a et (-b + racine de D) / 2a"
+
+[[cards]]
+id = "derivee-xn"
+question = "Quelle est la dérivée de x^n ?"
+answer = "n x^(n-1)"
+
+[[cards]]
+id = "derivee-exp"
+question = "Quelle est la dérivée de e^x ?"
+answer = "e^x"
+
+[[cards]]
+id = "derivee-ln"
+question = "Quelle est la dérivée de ln(x) ?"
+answer = "1/x"
+
+[[cards]]
+id = "derivee-sin"
+question = "Quelle est la dérivée de sin(x) ?"
+answer = "cos(x)"
+
+[[cards]]
+id = "derivee-cos"
+question = "Quelle est la dérivée de cos(x) ?"
+answer = "-sin(x)"
+
+[[cards]]
+id = "derivee-produit"
+question = "Quelle est la dérivée d'un produit u v ?"
+answer = "u' v + u v'"
+
+[[cards]]
+id = "derivee-quotient"
+question = "Quelle est la dérivée d'un quotient u / v ?"
+answer = "(u' v - u v') / v^2"
+
+[[cards]]
+id = "derivee-composee"
+question = "Quelle est la dérivée de f(g(x)) ?"
+answer = "g'(x) f'(g(x))"
+
+[[cards]]
+id = "primitive-1-x"
+question = "Quelle est une primitive de 1/x sur ]0, +inf[ ?"
+answer = "ln(x)"
+
+[[cards]]
+id = "ln-produit"
+question = "Que vaut ln(ab) pour a et b strictement positifs ?"
+answer = "ln(a) + ln(b)"
+
+[[cards]]
+id = "exp-somme"
+question = "Que vaut e^(a+b) ?"
+answer = "e^a e^b"
+
+[[cards]]
+id = "ln-1"
+question = "Que vaut ln(1) ?"
+answer = "0"
+
+[[cards]]
+id = "ln-e"
+question = "Que vaut ln(e) ?"
+answer = "1"
+
+[[cards]]
+id = "cos2-sin2"
+question = "Que vaut cos^2(x) + sin^2(x) ?"
+answer = "1"
+
+[[cards]]
+id = "cos-pi-3"
+question = "Que vaut cos(pi/3) ?"
+answer = "1/2"
+
+[[cards]]
+id = "sin-pi-6"
+question = "Que vaut sin(pi/6) ?"
+answer = "1/2"
+
+[[cards]]
+id = "cos-pi-4"
+question = "Que vaut cos(pi/4) ?"
+answer = "racine de 2 / 2"
+
+[[cards]]
+id = "sin-pi-3"
+question = "Que vaut sin(pi/3) ?"
+answer = "racine de 3 / 2"
+
+[[cards]]
+id = "euler"
+question = "Que vaut e^(i pi) + 1 ?"
+answer = "0"
+
+[[cards]]
+id = "i-carre"
+question = "Que vaut i^2 ?"
+answer = "-1"
+
+[[cards]]
+id = "module"
+question = "Quel est le module du nombre complexe a + ib ?"
+answer = "racine de (a^2 + b^2)"
+
+[[cards]]
+id = "suite-arithmetique"
+question = "Quel est le terme général d'une suite arithmétique de premier terme u0 et de raison r ?"
+answer = "u_n = u0 + n r"
+
+[[cards]]
+id = "suite-geometrique"
+question = "Quel est le terme général d'une suite géométrique de premier terme u0 et de raison q ?"
+answer = "u_n = u0 q^n"
+
+[[cards]]
+id = "somme-entiers"
+question = "Que vaut 1 + 2 + ... + n ?"
+answer = "n(n + 1) / 2"
+
+[[cards]]
+id = "somme-geometrique"
+question = "Que vaut 1 + q + q^2 + ... + q^n pour q différent de 1 ?"
+answer = "(1 - q^(n+1)) / (1 - q)"
+
+[[cards]]
+id = "binome"
+question = "Combien y a-t-il de façons de choisir k éléments parmi n ?"
+answer = "n! / (k! (n - k)!)"
+
+[[cards]]
+id = "factorielle-0"
+question = "Que vaut 0! ?"
+answer = "1"
+
+[[cards]]
+id = "probabilite-union"
+question = "Que vaut P(A ou B) ?"
+answer = "P(A) + P(B) - P(A et B)"
+
+[[cards]]
+id = "independance"
+question = "Quand deux événements A et B sont-ils indépendants ?"
+answer = "Quand P(A et B) = P(A) P(B)"
+
+[[cards]]
+id = "esperance-de"
+question = "Quelle est l'espérance d'un lancer de dé équilibré à six faces ?"
+answer = "3,5"
+
+[[cards]]
+id = "nombre-premier"
+question = "Qu'est-ce qu'un nombre premier ?"
+answer = "Un entier naturel qui a exactement deux diviseurs : 1 et lui-même"
+
+[[cards]]
+id = "premiers-moins-20"
+question = "Quels sont les nombres premiers inférieurs à 20 ?"
+answer = "2, 3, 5, 7, 11, 13, 17 et 19"
+
+[[cards]]
+id = "racine-2-irrationnel"
+question = "La racine carrée de 2 est-elle rationnelle ?"
+answer = "Non, elle est irrationnelle"
+
+[[cards]]
+id = "pi-decimales"
+question = "Quelles sont les cinq premières décimales de pi ?"
+answer = "3,14159"
+
+[[cards]]
+id = "thales"
+question = "Que dit le théorème de Thalès ?"
+answer = "Deux droites parallèles coupées par deux sécantes déterminent des segments proportionnels"
+
+[[cards]]
+id = "produit-scalaire"
+question = "Comment calcule-t-on le produit scalaire de (x, y) et (x', y') dans un repère orthonormé ?"
+answer = "x x' + y y'"
+
+[[cards]]
+id = "pente"
+question = "Quelle est la pente de la droite passant par (x1, y1) et (x2, y2) ?"
+answer = "(y2 - y1) / (x2 - x1)"

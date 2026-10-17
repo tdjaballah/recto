@@ -15,10 +15,10 @@ upgrade: ## Upgrade the dependencies to their latest allowed versions
 	uv lock --upgrade
 	uv sync
 
-fix: ## Apply the type and lint fixes, then format the code
+fix: ## Apply the type fixes, format the code, then apply the lint fixes
 	uv run ty check --fix
-	uv run ruff check --fix .
 	uv run ruff format .
+	uv run ruff check --fix .
 
 lint: ## Check the lockfile, formatting, lint and types without changing anything
 	uv lock --check
@@ -34,8 +34,8 @@ check: lint test ## Everything CI checks
 build: clean ## Build the wheel and the sdist into dist/
 	uv build
 
-run: ## Launch the app
-	uv run recto
+run: ## Launch the app with the variables from .env
+	uv run --env-file .env recto
 
 clean: ## Remove build outputs and caches
 	rm -rf dist .pytest_cache .ruff_cache

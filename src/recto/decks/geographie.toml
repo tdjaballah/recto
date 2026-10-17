@@ -1,0 +1,254 @@
+[deck]
+name = "Géographie"
+description = "Capitales, fleuves, sommets et océans"
+instructions = "Réponds en français. Sois tolérant sur l'orthographe des noms propres et accepte les noms locaux usuels (Beijing pour Pékin)."
+
+[[cards]]
+id = "france"
+question = "Quelle est la capitale de la France ?"
+answer = "Paris"
+
+[[cards]]
+id = "espagne"
+question = "Quelle est la capitale de l'Espagne ?"
+answer = "Madrid"
+
+[[cards]]
+id = "portugal"
+question = "Quelle est la capitale du Portugal ?"
+answer = "Lisbonne"
+
+[[cards]]
+id = "italie"
+question = "Quelle est la capitale de l'Italie ?"
+answer = "Rome"
+
+[[cards]]
+id = "allemagne"
+question = "Quelle est la capitale de l'Allemagne ?"
+answer = "Berlin"
+
+[[cards]]
+id = "pays-bas"
+question = "Quelle est la capitale des Pays-Bas ?"
+answer = "Amsterdam"
+
+[[cards]]
+id = "belgique"
+question = "Quelle est la capitale de la Belgique ?"
+answer = "Bruxelles"
+
+[[cards]]
+id = "suisse"
+question = "Quelle est la capitale de la Suisse ?"
+answer = "Berne"
+
+[[cards]]
+id = "autriche"
+question = "Quelle est la capitale de l'Autriche ?"
+answer = "Vienne"
+
+[[cards]]
+id = "pologne"
+question = "Quelle est la capitale de la Pologne ?"
+answer = "Varsovie"
+
+[[cards]]
+id = "hongrie"
+question = "Quelle est la capitale de la Hongrie ?"
+answer = "Budapest"
+
+[[cards]]
+id = "roumanie"
+question = "Quelle est la capitale de la Roumanie ?"
+answer = "Bucarest"
+
+[[cards]]
+id = "grece"
+question = "Quelle est la capitale de la Grèce ?"
+answer = "Athènes"
+
+[[cards]]
+id = "suede"
+question = "Quelle est la capitale de la Suède ?"
+answer = "Stockholm"
+
+[[cards]]
+id = "norvege"
+question = "Quelle est la capitale de la Norvège ?"
+answer = "Oslo"
+
+[[cards]]
+id = "finlande"
+question = "Quelle est la capitale de la Finlande ?"
+answer = "Helsinki"
+
+[[cards]]
+id = "danemark"
+question = "Quelle est la capitale du Danemark ?"
+answer = "Copenhague"
+
+[[cards]]
+id = "irlande"
+question = "Quelle est la capitale de l'Irlande ?"
+answer = "Dublin"
+
+[[cards]]
+id = "islande"
+question = "Quelle est la capitale de l'Islande ?"
+answer = "Reykjavik"
+
+[[cards]]
+id = "turquie"
+question = "Quelle est la capitale de la Turquie ?"
+answer = "Ankara"
+
+[[cards]]
+id = "maroc"
+question = "Quelle est la capitale du Maroc ?"
+answer = "Rabat"
+
+[[cards]]
+id = "egypte"
+question = "Quelle est la capitale de l'Égypte ?"
+answer = "Le Caire"
+
+[[cards]]
+id = "nigeria"
+question = "Quelle est la capitale du Nigeria ?"
+answer = "Abuja"
+
+[[cards]]
+id = "niger"
+question = "Quelle est la capitale du Niger ?"
+answer = "Niamey"
+
+[[cards]]
+id = "kenya"
+question = "Quelle est la capitale du Kenya ?"
+answer = "Nairobi"
+
+[[cards]]
+id = "ethiopie"
+question = "Quelle est la capitale de l'Éthiopie ?"
+answer = "Addis-Abeba"
+
+[[cards]]
+id = "afrique-du-sud"
+question = "Quelles sont les trois capitales de l'Afrique du Sud ?"
+answer = "Pretoria (exécutif), Le Cap (législatif) et Bloemfontein (judiciaire)"
+
+[[cards]]
+id = "senegal"
+question = "Quelle est la capitale du Sénégal ?"
+answer = "Dakar"
+
+[[cards]]
+id = "canada"
+question = "Quelle est la capitale du Canada ?"
+answer = "Ottawa"
+
+[[cards]]
+id = "etats-unis"
+question = "Quelle est la capitale des États-Unis ?"
+answer = "Washington"
+
+[[cards]]
+id = "mexique"
+question = "Quelle est la capitale du Mexique ?"
+answer = "Mexico"
+
+[[cards]]
+id = "bresil"
+question = "Quelle est la capitale du Brésil ?"
+answer = "Brasilia"
+
+[[cards]]
+id = "argentine"
+question = "Quelle est la capitale de l'Argentine ?"
+answer = "Buenos Aires"
+
+[[cards]]
+id = "chili"
+question = "Quelle est la capitale du Chili ?"
+answer = "Santiago"
+
+[[cards]]
+id = "perou"
+question = "Quelle est la capitale du Pérou ?"
+answer = "Lima"
+
+[[cards]]
+id = "colombie"
+question = "Quelle est la capitale de la Colombie ?"
+answer = "Bogota"
+
+[[cards]]
+id = "australie"
+question = "Quelle est la capitale de l'Australie ?"
+answer = "Canberra"
+
+[[cards]]
+id = "nouvelle-zelande"
+question = "Quelle est la capitale de la Nouvelle-Zélande ?"
+answer = "Wellington"
+
+[[cards]]
+id = "japon"
+question = "Quelle est la capitale du Japon ?"
+answer = "Tokyo"
+
+[[cards]]
+id = "chine"
+question = "Quelle est la capitale de la Chine ?"
+answer = "Pékin"
+
+[[cards]]
+id = "coree-du-sud"
+question = "Quelle est la capitale de la Corée du Sud ?"
+answer = "Séoul"
+
+[[cards]]
+id = "inde"
+question = "Quelle est la capitale de l'Inde ?"
+answer = "New Delhi"
+
+[[cards]]
+id = "thailande"
+question = "Quelle est la capitale de la Thaïlande ?"
+answer = "Bangkok"
+
+[[cards]]
+id = "vietnam"
+question = "Quelle est la capitale du Viêt Nam ?"
+answer = "Hanoï"
+
+[[cards]]
+id = "indonesie"
+question = "Quelle est la capitale de l'Indonésie ?"
+answer = "Jakarta"
+
+[[cards]]
+id = "iran"
+question = "Quelle est la capitale de l'Iran ?"
+answer = "Téhéran"
+
+[[cards]]
+id = "plus-long-fleuve"
+question = "Quel est le plus long fleuve d'Afrique ?"
+answer = "Le Nil"
+
+[[cards]]
+id = "plus-haut-sommet"
+question = "Quel est le plus haut sommet du monde ?"
+answer = "L'Everest, 8 849 m, dans l'Himalaya entre le Népal et la Chine"
+
+[[cards]]
+id = "plus-grand-desert-chaud"
+question = "Quel est le plus grand désert chaud du monde ?"
+answer = "Le Sahara"
+
+[[cards]]
+id = "plus-grand-ocean"
+question = "Quel est le plus grand océan du monde ?"
+answer = "L'océan Pacifique"

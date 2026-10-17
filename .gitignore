@@ -11,3 +11,7 @@ wheels/
 
 .claude/
 CLAUDE.md
+
+*.env
+!.example.env
+docs/
