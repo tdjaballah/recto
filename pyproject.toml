@@ -3,8 +3,19 @@ name = "recto"
 version = "0.1.0"
 description = "Learn things by heart with flashcards in the terminal"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
-    { name = "Thibault Djaballah", email = "thibault.djaballah@gmail.com" }
+    { name = "Thibault Djaballah", email = "t.djaballah@datooine.tech" }
+]
+keywords = ["flashcards", "spaced-repetition", "fsrs", "tui", "llm"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Education",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Education",
 ]
 requires-python = ">=3.13"
 dependencies = [
@@ -15,6 +26,11 @@ dependencies = [
     "pydantic-settings>=2.16.0",
     "textual>=8.2.8",
 ]
+
+[project.urls]
+Homepage = "https://github.com/tdjaballah/recto"
+Issues = "https://github.com/tdjaballah/recto/issues"
+Changelog = "https://github.com/tdjaballah/recto/releases"
 
 [project.scripts]
 recto = "recto.app:main"

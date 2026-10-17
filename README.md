@@ -1,5 +1,10 @@
 # recto
 
+[![CI](https://github.com/tdjaballah/recto/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/tdjaballah/recto/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/recto)](https://pypi.org/project/recto/)
+[![Python](https://img.shields.io/pypi/pyversions/recto)](https://pypi.org/project/recto/)
+[![License](https://img.shields.io/github/license/tdjaballah/recto)](https://github.com/tdjaballah/recto/blob/main/LICENSE)
+
 A terminal app, in the spirit of Anki, to learn things by heart with flashcards.
 
 A deck holds only question/answer pairs. When it is imported, a model writes variants of every card: the question asked the other way round when that makes sense, and a few rephrasings. Each review asks one variant at random, so you learn the knowledge, not one wording. You type the answer, the model scores it and says what was missing, and [FSRS](https://github.com/open-spaced-repetition/py-fsrs) decides when the card comes back.
@@ -7,10 +12,10 @@ A deck holds only question/answer pairs. When it is imported, a model writes var
 ## Install
 
 ```bash
-uv tool install git+https://github.com/tdjaballah/recto
+uv tool install recto
 ```
 
-Each tagged version also has its wheel attached to a [GitHub release](https://github.com/tdjaballah/recto/releases).
+Each tagged version is published on [PyPI](https://pypi.org/project/recto/) and has its wheel attached to a [GitHub release](https://github.com/tdjaballah/recto/releases).
 
 ## Use
 
@@ -69,11 +74,11 @@ make check
 
 ## Release
 
-Every push builds the wheel in CI. Pushing a tag on a commit of `main` that matches the version in `pyproject.toml` publishes it as a GitHub release:
+Every push builds the wheel in CI. Pushing a tag on a commit of `main` that matches the version in `pyproject.toml` publishes it on PyPI, through [trusted publishing](https://docs.pypi.org/trusted-publishers/), and as a GitHub release:
 
 ```bash
 uv version --bump minor
-git commit -am "Release 0.2.0"
+git commit -am "chore(release): 0.2.0"
 git tag v0.2.0
 git push origin main v0.2.0
 ```
