@@ -20,7 +20,11 @@ class Today:
 
     @property
     def to_review(self) -> int:
-        return len(self.due) + len(self.ahead)
+        return len(self.due) + len(self.ahead) - self.learning
+
+    @property
+    def learning(self) -> int:
+        return sum(1 for item in (*self.due, *self.ahead) if item.memory and item.memory.learning)
 
 
 def plan_today(knowledge: Sequence[Knowledge], now: datetime) -> Today:

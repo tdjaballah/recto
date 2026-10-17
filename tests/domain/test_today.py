@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from recto.domain.grading import Rating
 from recto.domain.today import NEW_PER_DAY, plan_today
 from tests.object_mothers.knowledge import NOW, KnowledgeMother
 
@@ -27,6 +28,17 @@ def test_knowledge_due_within_minutes_is_asked_last() -> None:
 
     assert [item.id for item in today.queue] == ["new", "soon"]
     assert today.to_review == 1
+
+
+def test_knowledge_being_learnt_is_counted_apart_from_reviews() -> None:
+    review = KnowledgeMother.due().with_id("review").build()
+    seen = KnowledgeMother.new().with_id("seen").answered(Rating.GOOD, at=NOW - timedelta(minutes=15)).build()
+    seen_now = KnowledgeMother.new().with_id("seen-now").answered(Rating.GOOD, at=NOW).build()
+    forgotten = KnowledgeMother.due().with_id("forgotten").answered(Rating.AGAIN, at=NOW).build()
+
+    today = plan_today([review, seen, seen_now, forgotten], NOW)
+
+    assert (today.to_review, today.learning) == (1, 3)
 
 
 def test_new_knowledge_comes_in_file_order_up_to_the_daily_limit() -> None:

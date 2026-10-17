@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from recto.domain.deck import Deck
+from recto.domain.grading import Rating
 from recto.ports.deck_repository import DeckRepository
 from recto.use_cases.list_decks import DeckSummary, ListDecks
 from tests.container import build_test_container
@@ -23,10 +24,11 @@ def test_each_deck_shows_what_is_left_to_do_today() -> None:
             KnowledgeMother.due().with_id("due").build(),
             KnowledgeMother.new().with_id("new").at_position(1).build(),
             KnowledgeMother.new().with_id("later").due_at(NOW + timedelta(days=2)).build(),
+            KnowledgeMother.new().with_id("seen").at_position(2).answered(Rating.GOOD, at=NOW).build(),
         ],
     )
 
-    assert list_decks.execute() == [DeckSummary(GEOGRAPHY, to_review=1, new=1)]
+    assert list_decks.execute() == [DeckSummary(GEOGRAPHY, to_review=1, learning=1, new=1)]
 
 
 def test_no_deck_lists_nothing() -> None:

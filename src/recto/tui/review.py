@@ -67,7 +67,9 @@ class ReviewScreen(Screen[None]):
             return
         self._question = question
         self._set_graded(False)
-        self.query_one("#progress", Static).update(f"{question.to_review} to review · {question.new} new")
+        self.query_one("#progress", Static).update(
+            f"{question.to_review} to review · {question.learning} learning · {question.new} new"
+        )
         self.query_one("#question", Static).update(question.variant.question)
         self.query_one("#grade", Static).update("")
         self.query_one("#expected", Static).update("")

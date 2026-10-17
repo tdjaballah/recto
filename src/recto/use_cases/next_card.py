@@ -12,6 +12,7 @@ class Question:
     knowledge: Knowledge
     variant: Variant
     to_review: int
+    learning: int
     new: int
 
 
@@ -29,5 +30,6 @@ class NextCard:
             knowledge=knowledge,
             variant=random.choice(knowledge.variants),
             to_review=today.to_review,
+            learning=today.learning,
             new=len(today.new),
         )
