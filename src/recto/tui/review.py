@@ -9,8 +9,10 @@ from textual.widgets import Footer, Header, Input, LoadingIndicator, Static
 from recto.container import Container
 from recto.domain.deck import Deck
 from recto.domain.errors import ModelUnavailable
-from recto.domain.grading import Grade
+from recto.domain.grading import Grade, Rating, rating_for
 from recto.use_cases.next_card import Question
+
+MARKS = {Rating.GOOD: "✓", Rating.HARD: "~", Rating.AGAIN: "✗"}
 
 
 class ReviewScreen(Screen[None]):
@@ -89,7 +91,7 @@ class ReviewScreen(Screen[None]):
         if not self.is_attached:
             return
         self.query_one("#judging").display = False
-        mark = "✓" if grade.score == 1 else "✗"
+        mark = MARKS[rating_for(grade.score)]
         self.query_one("#grade", Static).update(f"{mark} {round(grade.score * 100)} %   {grade.comment}")
         self.query_one("#expected", Static).update(f"Answer: {question.variant.answer}")
         self._set_graded(True)

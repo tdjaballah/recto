@@ -46,7 +46,7 @@ async def test_typed_answer_is_graded_and_the_reference_shown() -> None:
         await app.workers.wait_for_complete()
         await pilot.pause()
 
-        assert text(app, "#grade") == "✗ 50 %   Presque."
+        assert text(app, "#grade") == "~ 50 %   Presque."
         assert text(app, "#expected") == "Answer: Paris"
         assert judge.requests[0][1] == "paris"
         assert len(repository.reviews("geographie", "france")) == 1
