@@ -7,10 +7,10 @@ A deck holds only question/answer pairs. When it is imported, a model writes var
 ## Install
 
 ```bash
-uv tool install git+https://github.com/tdjaballah/recto
+uv tool install recto
 ```
 
-Each tagged version also has its wheel attached to a [GitHub release](https://github.com/tdjaballah/recto/releases).
+Each tagged version is published on [PyPI](https://pypi.org/project/recto/) and has its wheel attached to a [GitHub release](https://github.com/tdjaballah/recto/releases).
 
 ## Use
 
@@ -69,11 +69,11 @@ make check
 
 ## Release
 
-Every push builds the wheel in CI. Pushing a tag on a commit of `main` that matches the version in `pyproject.toml` publishes it as a GitHub release:
+Every push builds the wheel in CI. Pushing a tag on a commit of `main` that matches the version in `pyproject.toml` publishes it on PyPI, through [trusted publishing](https://docs.pypi.org/trusted-publishers/), and as a GitHub release:
 
 ```bash
 uv version --bump minor
-git commit -am "Release 0.2.0"
+git commit -am "chore(release): 0.2.0"
 git tag v0.2.0
 git push origin main v0.2.0
 ```
