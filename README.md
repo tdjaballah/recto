@@ -23,8 +23,8 @@ Press `i` to import a deck: one of the four examples (Anglais, Géographie, Vins
 
 | Variable | Default | |
 |---|---|---|
-| `OPENAI_API_KEY` | | Needed to import decks and grade answers |
-| `RECTO_MODEL` | `openai:gpt-5.4-mini` | Any [PydanticAI model name](https://ai.pydantic.dev/models/) |
+| `OPENAI_API_KEY` | | Required: recto won't start without it |
+| `RECTO_MODEL` | `gpt-5.4-mini` | Any [OpenAI model name](https://platform.openai.com/docs/models) |
 | `RECTO_DB` | the user data directory | Where reviews and variants are kept |
 
 ## Write a deck

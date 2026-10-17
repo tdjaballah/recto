@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 from pydantic_ai.exceptions import AgentRunError, UserError
+from pydantic_ai.models import Model
 
 from recto.domain.errors import ModelUnavailable
 from recto.domain.grading import Grade
@@ -46,9 +47,9 @@ class _Grade(BaseModel):
 
 
 class PydanticAIVariantGenerator(VariantGenerator):
-    def __init__(self, model: str) -> None:
-        self._variants = Agent(model, output_type=_Variants, instructions=GENERATE, defer_model_check=True)
-        self._one = Agent(model, output_type=_Pair, instructions=GENERATE_ONE, defer_model_check=True)
+    def __init__(self, model: Model) -> None:
+        self._variants = Agent(model, output_type=_Variants, instructions=GENERATE)
+        self._one = Agent(model, output_type=_Pair, instructions=GENERATE_ONE)
 
     def generate(self, knowledge: Knowledge, instructions: str) -> list[Variant]:
         output = _run(self._variants, _card(knowledge, instructions))
@@ -62,8 +63,8 @@ class PydanticAIVariantGenerator(VariantGenerator):
 
 
 class PydanticAIAnswerJudge(AnswerJudge):
-    def __init__(self, model: str) -> None:
-        self._agent = Agent(model, output_type=_Grade, instructions=JUDGE, defer_model_check=True)
+    def __init__(self, model: Model) -> None:
+        self._agent = Agent(model, output_type=_Grade, instructions=JUDGE)
 
     def judge(self, variant: Variant, answer: str, instructions: str) -> Grade:
         prompt = (

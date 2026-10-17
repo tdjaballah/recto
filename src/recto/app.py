@@ -1,15 +1,19 @@
-import os
-from pathlib import Path
+import sys
 
-from platformdirs import user_data_dir
+import pydantic_ai
+from pydantic import ValidationError
 
 from recto.container import Container
+from recto.settings import Settings
 from recto.tui.app import RectoApp
 
 
 def main() -> None:
-    os.environ.setdefault("PYDANTIC_AI_NO_BANNER", "1")
+    pydantic_ai.BANNER_ENABLED = False  # ty: ignore[invalid-assignment]
+    try:
+        settings = Settings()
+    except ValidationError as error:
+        sys.exit("\n".join(f"recto: {e['loc'][0]}: {e['msg']}" for e in error.errors()))
     container = Container()
-    container.config.db_path.from_env("RECTO_DB", default=str(Path(user_data_dir("recto")) / "recto.db"))
-    container.config.model.from_env("RECTO_MODEL", default="openai:gpt-5.4-mini")
+    container.config.from_pydantic(settings)
     RectoApp(container).run()
