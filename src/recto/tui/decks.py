@@ -7,11 +7,13 @@ from textual.widgets import Footer, Header, OptionList, Static
 from textual.widgets.option_list import Option
 
 from recto.container import Container
+from recto.tui.importing import ImportScreen
 from recto.use_cases.list_decks import DeckSummary
 
 
 class DecksScreen(Screen[None]):
     BINDINGS: ClassVar[list[BindingType]] = [
+        ("i", "import", "Import"),
         ("q", "app.quit", "Quit"),
     ]
 
@@ -34,6 +36,9 @@ class DecksScreen(Screen[None]):
         if summaries:
             decks.highlighted = min(highlighted, len(summaries) - 1)
         self.query_one("#empty", Static).update("" if summaries else "No deck yet. Press i to import one.")
+
+    def action_import(self) -> None:
+        self.app.push_screen(ImportScreen(self._container))
 
 
 def _line(summary: DeckSummary) -> str:
