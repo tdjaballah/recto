@@ -2,7 +2,7 @@ from textwrap import shorten
 from typing import ClassVar
 
 from textual.app import ComposeResult
-from textual.binding import BindingType
+from textual.binding import Binding, BindingType
 from textual.screen import Screen
 from textual.widgets import Footer, Header, OptionList, Static
 from textual.widgets.option_list import Option
@@ -17,6 +17,7 @@ from recto.use_cases.list_decks import DeckSummary
 
 class DecksScreen(Screen[None]):
     BINDINGS: ClassVar[list[BindingType]] = [
+        Binding("enter", "review", "Review", priority=True),
         ("c", "cards", "Cards"),
         ("i", "import", "Import"),
         ("q", "app.quit", "Quit"),
@@ -45,16 +46,22 @@ class DecksScreen(Screen[None]):
         self.query_one("#empty", Static).update("" if summaries else "No deck yet. Press i to import one.")
 
     def on_option_list_option_selected(self, event: OptionList.OptionSelected) -> None:
-        if event.option.id:
-            self.app.push_screen(ReviewScreen(self._container, self._decks[event.option.id]))
+        self.action_review()
+
+    def action_review(self) -> None:
+        if deck := self._highlighted():
+            self.app.push_screen(ReviewScreen(self._container, deck))
 
     def action_cards(self) -> None:
-        option = self.query_one("#decks", OptionList).highlighted_option
-        if option and option.id:
-            self.app.push_screen(KnowledgeListScreen(self._container, self._decks[option.id]))
+        if deck := self._highlighted():
+            self.app.push_screen(KnowledgeListScreen(self._container, deck))
 
     def action_import(self) -> None:
         self.app.push_screen(ImportScreen(self._container))
+
+    def _highlighted(self) -> Deck | None:
+        option = self.query_one("#decks", OptionList).highlighted_option
+        return self._decks.get(option.id) if option and option.id else None
 
 
 def _line(summary: DeckSummary) -> str:

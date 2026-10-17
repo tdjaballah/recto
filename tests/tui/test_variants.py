@@ -45,6 +45,26 @@ async def test_variants_of_a_knowledge_are_listed() -> None:
         assert str(options.get_option_at_index(0).prompt).endswith("(original)")
 
 
+async def test_enter_is_shown_as_the_key_to_the_variants_of_a_card() -> None:
+    app, _, _ = setup()
+
+    async with app.run_test() as pilot:
+        await pilot.press("c")
+
+        assert app.screen.active_bindings["enter"].binding.description == "Variants"
+
+
+async def test_edit_and_delete_are_greyed_out_on_the_original() -> None:
+    app, _, _ = setup()
+
+    async with app.run_test() as pilot:
+        await pilot.press("c", "enter")
+
+        bindings = app.screen.active_bindings
+        assert not bindings["e"].enabled
+        assert not bindings["d"].enabled
+
+
 async def test_variant_is_deleted_after_confirmation() -> None:
     app, repository, _ = setup()
 
@@ -94,6 +114,17 @@ async def test_variant_is_edited_in_a_form() -> None:
         assert knowledge.variant("rephrased").answer == "Paris (75)"
 
 
+async def test_enter_edits_the_highlighted_variant() -> None:
+    app, repository, _ = setup()
+
+    async with app.run_test() as pilot:
+        await pilot.press("c", "enter", "down", "enter", "enter", *" (75)", "enter")
+
+        knowledge = repository.get_knowledge("geographie", "france")
+        assert knowledge is not None
+        assert knowledge.variant("rephrased").answer == "Paris (75)"
+
+
 async def test_blank_variant_is_refused() -> None:
     app, repository, _ = setup()
 
@@ -137,6 +168,7 @@ async def test_variants_cannot_change_while_one_is_generated() -> None:
         await pilot.press("c", "enter", "g", "n")
 
         assert isinstance(app.screen, VariantsScreen)
+        assert not app.screen.active_bindings["n"].enabled
 
         generator.release()
         await app.workers.wait_for_complete()

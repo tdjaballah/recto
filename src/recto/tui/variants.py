@@ -3,7 +3,7 @@ from typing import ClassVar
 
 from textual import work
 from textual.app import ComposeResult
-from textual.binding import BindingType
+from textual.binding import Binding, BindingType
 from textual.containers import Vertical
 from textual.screen import ModalScreen, Screen
 from textual.widgets import Footer, Header, Input, Label, OptionList, Static
@@ -18,6 +18,7 @@ class VariantsScreen(Screen[None]):
     BINDINGS: ClassVar[list[BindingType]] = [
         ("n", "new", "New"),
         ("e", "edit", "Edit"),
+        Binding("enter", "edit", "Edit", show=False, priority=True),
         ("d", "delete", "Delete"),
         ("g", "generate", "Generate"),
         ("escape", "app.pop_screen", "Back"),
@@ -44,10 +45,10 @@ class VariantsScreen(Screen[None]):
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         if self._generating and action in ("new", "edit", "delete", "generate"):
-            return False
+            return None
         if action in ("edit", "delete"):
             variant = self._highlighted()
-            return variant is not None and not variant.is_original
+            return None if variant is None or variant.is_original else True
         return True
 
     def on_option_list_option_highlighted(self, event: OptionList.OptionHighlighted) -> None:

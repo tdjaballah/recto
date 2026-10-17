@@ -1,7 +1,7 @@
 from typing import ClassVar
 
 from textual.app import ComposeResult
-from textual.binding import BindingType
+from textual.binding import Binding, BindingType
 from textual.screen import Screen
 from textual.widgets import Footer, Header, OptionList
 from textual.widgets.option_list import Option
@@ -12,7 +12,10 @@ from recto.tui.variants import VariantsScreen
 
 
 class KnowledgeListScreen(Screen[None]):
-    BINDINGS: ClassVar[list[BindingType]] = [("escape", "app.pop_screen", "Back")]
+    BINDINGS: ClassVar[list[BindingType]] = [
+        Binding("enter", "variants", "Variants", priority=True),
+        ("escape", "app.pop_screen", "Back"),
+    ]
 
     def __init__(self, container: Container, deck: Deck) -> None:
         super().__init__()
@@ -37,5 +40,9 @@ class KnowledgeListScreen(Screen[None]):
             options.highlighted = min(highlighted, len(knowledge) - 1)
 
     def on_option_list_option_selected(self, event: OptionList.OptionSelected) -> None:
-        if event.option.id:
-            self.app.push_screen(VariantsScreen(self._container, self._deck.id, event.option.id))
+        self.action_variants()
+
+    def action_variants(self) -> None:
+        option = self.query_one("#knowledge", OptionList).highlighted_option
+        if option and option.id:
+            self.app.push_screen(VariantsScreen(self._container, self._deck.id, option.id))

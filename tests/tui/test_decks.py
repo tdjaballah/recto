@@ -40,6 +40,14 @@ async def test_decks_show_what_is_left_today() -> None:
         assert prompt.endswith("1 to review ·  0 new")
 
 
+async def test_enter_is_shown_as_the_key_to_review_a_deck() -> None:
+    app, repository = setup()
+    repository.save_deck(Deck("geographie", "Géographie", "Capitales"), [KnowledgeMother.new().build()])
+
+    async with app.run_test():
+        assert app.screen.active_bindings["enter"].binding.description == "Review"
+
+
 async def test_long_descriptions_are_cut_so_the_counts_line_up() -> None:
     app, repository = setup()
     repository.save_deck(Deck("anglais", "Anglais", "Vocabulaire courant, faux amis et verbes irréguliers"), [])
