@@ -1,5 +1,5 @@
 from dependency_injector import providers
-from textual.widgets import OptionList, Static
+from textual.widgets import Footer, OptionList, Static
 
 from recto.adapters.in_memory_deck_repository import InMemoryDeckRepository
 from recto.domain.deck import Deck
@@ -123,6 +123,39 @@ async def test_enter_edits_the_highlighted_variant() -> None:
         knowledge = repository.get_knowledge("geographie", "france")
         assert knowledge is not None
         assert knowledge.variant("rephrased").answer == "Paris (75)"
+
+
+async def test_forms_are_titled_after_what_they_do() -> None:
+    app, _, _ = setup()
+
+    async with app.run_test() as pilot:
+        await pilot.press("c", "enter", "n")
+        new_title = app.screen.query_one("#dialog").border_title
+        await pilot.press("escape", "down", "e")
+        edit_title = app.screen.query_one("#dialog").border_title
+
+        assert (new_title, edit_title) == ("New variant", "Edit variant")
+
+
+async def test_form_shows_how_to_save_and_cancel() -> None:
+    app, _, _ = setup()
+
+    async with app.run_test() as pilot:
+        await pilot.press("c", "enter", "n")
+
+        bindings = app.screen.active_bindings
+        assert (bindings["enter"].binding.description, bindings["escape"].binding.description) == ("Save", "Cancel")
+        assert len(app.screen.query(Footer)) == 1
+
+
+async def test_confirmation_names_the_variant_and_shows_its_keys() -> None:
+    app, _, _ = setup()
+
+    async with app.run_test() as pilot:
+        await pilot.press("c", "enter", "down", "d")
+
+        assert REPHRASED.question in str(app.screen.query_one("#message", Static).content)
+        assert len(app.screen.query(Footer)) == 1
 
 
 async def test_blank_variant_is_refused() -> None:
