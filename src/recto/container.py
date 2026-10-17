@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from dependency_injector import containers, providers
 
 from recto.adapters.pydantic_ai_models import PydanticAIAnswerJudge, PydanticAIVariantGenerator
@@ -26,9 +24,7 @@ from recto.use_cases.submit_answer import SubmitAnswer
 class Container(containers.DeclarativeContainer):
     config = providers.Configuration()
 
-    deck_repository: providers.Provider[DeckRepository] = providers.Singleton(
-        SqliteDeckRepository, path=config.db_path.as_(Path)
-    )
+    deck_repository: providers.Provider[DeckRepository] = providers.Singleton(SqliteDeckRepository, path=config.db)
     variant_generator: providers.Provider[VariantGenerator] = providers.Singleton(
         PydanticAIVariantGenerator, model=config.model
     )
