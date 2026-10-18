@@ -69,5 +69,5 @@ def test_unusable_path_is_an_invalid_deck(raw_path: str) -> None:
 def test_example_decks_hold_fifty_cards_each() -> None:
     decks = example_decks()
 
-    assert [deck_file.deck.id for deck_file in decks] == ["anglais", "geographie", "vins", "maths"]
+    assert [deck_file.deck.id for deck_file in decks] == ["anglais", "geographie", "vins", "maths", "histoire-france"]
     assert all(len(deck_file.cards) == 50 for deck_file in decks)

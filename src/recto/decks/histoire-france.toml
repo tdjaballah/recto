@@ -1,0 +1,254 @@
+[deck]
+name = "Histoire de France"
+description = "50 repères historiques, de la Gaule à la décolonisation"
+instructions = "Génère des variantes portant exclusivement sur le même fait historique précis, avec un seul élément attendu. Reformule sans déplacer la période, le protagoniste ou l’événement. Inverse une association personnage-événement ou événement-date seulement si le résultat est univoque, en nommant explicitement l’événement. N’invente jamais de causalité ni de question portant sur un autre fait. Respecte les distinctions entre date conventionnelle, date exacte et approximation (par exemple 'vers 496'). Pour corriger, accepte les chiffres romains ou arabes, les variantes de noms et les fautes mineures, mais refuse une date, une personne ou un événement incorrect. Évalue la connaissance du fait, pas la forme de la phrase. Ne crée pas de question inversée si plusieurs réponses seraient défendables."
+
+[[cards]]
+id = "alesia-52"
+question = "En quelle année avant notre ère a lieu la bataille d’Alésia ?"
+answer = "52 av. J.-C."
+
+[[cards]]
+id = "alesia-chef"
+question = "Quel chef gaulois se rend à Jules César après Alésia ?"
+answer = "Vercingétorix"
+
+[[cards]]
+id = "clovis-bapteme"
+question = "Quel roi franc est baptisé à Reims vers 496 ?"
+answer = "Clovis Ier"
+
+[[cards]]
+id = "charlemagne-couronnement"
+question = "En quelle année Charlemagne est-il couronné empereur ?"
+answer = "800"
+
+[[cards]]
+id = "verdun-traite"
+question = "Quel traité partage l’Empire carolingien en 843 ?"
+answer = "Le traité de Verdun"
+
+[[cards]]
+id = "capetiens-fondateur"
+question = "Quel roi inaugure la dynastie capétienne en 987 ?"
+answer = "Hugues Capet"
+
+[[cards]]
+id = "bouvines-date"
+question = "En quelle année a lieu la bataille de Bouvines ?"
+answer = "1214"
+
+[[cards]]
+id = "bouvines-roi"
+question = "Quel roi de France remporte la bataille de Bouvines ?"
+answer = "Philippe II Auguste"
+
+[[cards]]
+id = "saint-louis-nom"
+question = "Quel est le nom de règne de Louis IX ?"
+answer = "Saint Louis"
+
+[[cards]]
+id = "etats-generaux-1302"
+question = "Quel roi convoque des états généraux en 1302 ?"
+answer = "Philippe IV le Bel"
+
+[[cards]]
+id = "guerre-cent-ans-debut"
+question = "En quelle année commence traditionnellement la guerre de Cent Ans ?"
+answer = "1337"
+
+[[cards]]
+id = "crecy-date"
+question = "En quelle année les Français sont-ils battus à Crécy ?"
+answer = "1346"
+
+[[cards]]
+id = "jeanne-orleans"
+question = "En quelle année Jeanne d’Arc contribue-t-elle à lever le siège d’Orléans ?"
+answer = "1429"
+
+[[cards]]
+id = "cent-ans-fin"
+question = "En quelle année s’achève traditionnellement la guerre de Cent Ans ?"
+answer = "1453"
+
+[[cards]]
+id = "marignan-date"
+question = "En quelle année François Ier remporte-t-il la bataille de Marignan ?"
+answer = "1515"
+
+[[cards]]
+id = "villers-cotterets-roi"
+question = "Quel roi signe l’ordonnance de Villers-Cotterêts en 1539 ?"
+answer = "François Ier"
+
+[[cards]]
+id = "saint-barthelemy-date"
+question = "En quelle année a lieu le massacre de la Saint-Barthélemy ?"
+answer = "1572"
+
+[[cards]]
+id = "nantes-edit-roi"
+question = "Quel roi promulgue l’édit de Nantes en 1598 ?"
+answer = "Henri IV"
+
+[[cards]]
+id = "henri-iv-assassinat"
+question = "En quelle année Henri IV est-il assassiné ?"
+answer = "1610"
+
+[[cards]]
+id = "richelieu-roi"
+question = "Sous quel roi Richelieu devient-il principal ministre ?"
+answer = "Louis XIII"
+
+[[cards]]
+id = "louis-xiv-debut-personnel"
+question = "En quelle année Louis XIV commence-t-il son gouvernement personnel ?"
+answer = "1661"
+
+[[cards]]
+id = "versailles-cour"
+question = "En quelle année Louis XIV installe-t-il durablement la cour à Versailles ?"
+answer = "1682"
+
+[[cards]]
+id = "nantes-revocation"
+question = "En quelle année Louis XIV révoque-t-il l’édit de Nantes ?"
+answer = "1685"
+
+[[cards]]
+id = "sept-ans-fin"
+question = "Quel traité met fin à la guerre de Sept Ans en 1763 ?"
+answer = "Le traité de Paris"
+
+[[cards]]
+id = "etats-generaux-1789"
+question = "Quel roi convoque les états généraux en 1789 ?"
+answer = "Louis XVI"
+
+[[cards]]
+id = "bastille-date"
+question = "À quelle date a lieu la prise de la Bastille ?"
+answer = "14 juillet 1789"
+
+[[cards]]
+id = "droits-homme-date"
+question = "En quelle année est adoptée la Déclaration des droits de l’homme et du citoyen ?"
+answer = "1789"
+
+[[cards]]
+id = "monarchie-abolition"
+question = "À quelle date la Convention abolit-elle la monarchie ?"
+answer = "21 septembre 1792"
+
+[[cards]]
+id = "louis-xvi-execution"
+question = "À quelle date Louis XVI est-il exécuté ?"
+answer = "21 janvier 1793"
+
+[[cards]]
+id = "thermidor-date"
+question = "En quelle année Robespierre est-il renversé lors du 9 Thermidor ?"
+answer = "1794"
+
+[[cards]]
+id = "brumaire-date"
+question = "En quelle année Napoléon Bonaparte prend-il le pouvoir par le coup d’État du 18 Brumaire ?"
+answer = "1799"
+
+[[cards]]
+id = "napoleon-sacre"
+question = "En quelle année Napoléon Ier est-il sacré empereur ?"
+answer = "1804"
+
+[[cards]]
+id = "code-civil-date"
+question = "En quelle année le Code civil des Français est-il promulgué ?"
+answer = "1804"
+
+[[cards]]
+id = "waterloo-date"
+question = "En quelle année Napoléon Ier est-il vaincu à Waterloo ?"
+answer = "1815"
+
+[[cards]]
+id = "revolution-1830"
+question = "Quel roi est renversé lors de la révolution de Juillet 1830 ?"
+answer = "Charles X"
+
+[[cards]]
+id = "seconde-republique"
+question = "En quelle année est proclamée la Deuxième République ?"
+answer = "1848"
+
+[[cards]]
+id = "suffrage-1848"
+question = "En quelle année le suffrage universel masculin est-il instauré en France ?"
+answer = "1848"
+
+[[cards]]
+id = "second-empire-debut"
+question = "En quelle année Napoléon III devient-il empereur ?"
+answer = "1852"
+
+[[cards]]
+id = "troisieme-republique"
+question = "En quelle année la Troisième République est-elle proclamée ?"
+answer = "1870"
+
+[[cards]]
+id = "commune-paris"
+question = "En quelle année a lieu la Commune de Paris ?"
+answer = "1871"
+
+[[cards]]
+id = "ecole-ferry"
+question = "Quel ministre est associé aux lois scolaires de 1881 et 1882 ?"
+answer = "Jules Ferry"
+
+[[cards]]
+id = "dreyfus-condamnation"
+question = "En quelle année Alfred Dreyfus est-il condamné pour trahison ?"
+answer = "1894"
+
+[[cards]]
+id = "separation-eglises-etat"
+question = "En quelle année est votée la loi de séparation des Églises et de l’État ?"
+answer = "1905"
+
+[[cards]]
+id = "armistice-1918"
+question = "À quelle date est signé l’armistice mettant fin aux combats de la Première Guerre mondiale sur le front occidental ?"
+answer = "11 novembre 1918"
+
+[[cards]]
+id = "front-populaire"
+question = "En quelle année le Front populaire arrive-t-il au gouvernement ?"
+answer = "1936"
+
+[[cards]]
+id = "appel-18-juin"
+question = "Quel général lance l’appel du 18 juin 1940 ?"
+answer = "Charles de Gaulle"
+
+[[cards]]
+id = "liberation-paris"
+question = "En quelle année Paris est-il libéré de l’occupation allemande ?"
+answer = "1944"
+
+[[cards]]
+id = "vote-femmes"
+question = "En quelle année les Françaises obtiennent-elles le droit de vote ?"
+answer = "1944"
+
+[[cards]]
+id = "cinquieme-republique"
+question = "En quelle année naît la Cinquième République ?"
+answer = "1958"
+
+[[cards]]
+id = "evian-accords"
+question = "En quelle année sont signés les accords d’Évian ?"
+answer = "1962"
