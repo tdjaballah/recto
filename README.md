@@ -1,9 +1,12 @@
 # recto
 
 [![CI](https://github.com/tdjaballah/recto/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/tdjaballah/recto/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/recto)](https://pypi.org/project/recto/)
-[![Python](https://img.shields.io/pypi/pyversions/recto)](https://pypi.org/project/recto/)
-[![License](https://img.shields.io/github/license/tdjaballah/recto)](https://github.com/tdjaballah/recto/blob/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/recto?logo=pypi&logoColor=white)](https://pypi.org/project/recto/)
+[![Python](https://img.shields.io/pypi/pyversions/recto?logo=python&logoColor=white)](https://pypi.org/project/recto/)
+[![License](https://img.shields.io/pypi/l/recto)](https://github.com/tdjaballah/recto/blob/main/LICENSE)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![ty](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ty/main/assets/badge/v0.json)](https://github.com/astral-sh/ty)
 
 A terminal app, in the spirit of Anki, to learn things by heart with flashcards.
 
