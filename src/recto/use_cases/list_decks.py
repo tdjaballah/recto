@@ -10,6 +10,7 @@ from recto.ports.deck_repository import DeckRepository
 class DeckSummary:
     deck: Deck
     to_review: int
+    learning: int
     new: int
 
 
@@ -23,5 +24,7 @@ class ListDecks:
         summaries: list[DeckSummary] = []
         for deck in self._repository.decks():
             today = plan_today(self._repository.knowledge(deck.id), now)
-            summaries.append(DeckSummary(deck=deck, to_review=today.to_review, new=len(today.new)))
+            summaries.append(
+                DeckSummary(deck=deck, to_review=today.to_review, learning=today.learning, new=len(today.new))
+            )
         return summaries

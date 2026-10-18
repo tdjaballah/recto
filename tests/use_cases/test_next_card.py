@@ -27,7 +27,7 @@ def test_due_knowledge_is_asked_before_new_knowledge() -> None:
 
     assert question is not None
     assert question.knowledge.id == "due"
-    assert (question.to_review, question.new) == (1, 1)
+    assert (question.to_review, question.learning, question.new) == (1, 0, 1)
 
 
 def test_question_is_one_of_the_knowledge_variants() -> None:

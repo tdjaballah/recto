@@ -5,7 +5,7 @@ from typing import Self
 from recto.domain.deck import SourceCard
 from recto.domain.grading import Rating
 from recto.domain.knowledge import Knowledge, Variant, new_knowledge
-from recto.domain.memory import remember
+from recto.domain.memory import Memory, remember
 
 NOW = datetime(2026, 10, 16, 9, 0, tzinfo=UTC)
 
@@ -43,8 +43,12 @@ class KnowledgeMother:
         return self
 
     def due_at(self, when: datetime) -> Self:
-        memory = self._knowledge.memory or remember(None, Rating.GOOD, when - timedelta(days=3))
+        memory = self._knowledge.memory or _learnt(when - timedelta(days=3))
         self._knowledge = replace(self._knowledge, memory=replace(memory, due=when))
+        return self
+
+    def answered(self, rating: Rating, at: datetime) -> Self:
+        self._knowledge = replace(self._knowledge, memory=remember(self._knowledge.memory, rating, at))
         return self
 
     def introduced_at(self, when: datetime) -> Self:
@@ -54,3 +58,8 @@ class KnowledgeMother:
 
     def build(self) -> Knowledge:
         return replace(self._knowledge)
+
+
+def _learnt(at: datetime) -> Memory:
+    seen = remember(None, Rating.GOOD, at)
+    return remember(seen, Rating.GOOD, seen.due)

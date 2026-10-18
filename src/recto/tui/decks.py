@@ -65,5 +65,6 @@ class DecksScreen(Screen[None]):
 
 
 def _line(summary: DeckSummary) -> str:
-    description = shorten(summary.deck.description, 38, placeholder="…")
-    return f"{summary.deck.name:<14}{description:<40}{summary.to_review:>4} to review · {summary.new:>2} new"
+    description = shorten(summary.deck.description, 23, placeholder="…")
+    counts = f"{summary.to_review:>4} to review · {summary.learning:>2} learning · {summary.new:>2} new"
+    return f"{summary.deck.name:<14}{description:<25}{counts}"

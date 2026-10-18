@@ -37,7 +37,7 @@ async def test_decks_show_what_is_left_today() -> None:
     async with app.run_test():
         prompt = str(app.screen.query_one("#decks", OptionList).get_option_at_index(0).prompt)
         assert prompt.startswith("Géographie")
-        assert prompt.endswith("1 to review ·  0 new")
+        assert prompt.endswith("1 to review ·  0 learning ·  0 new")
 
 
 async def test_enter_is_shown_as_the_key_to_review_a_deck() -> None:

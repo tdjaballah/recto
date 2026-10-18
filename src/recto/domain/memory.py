@@ -15,6 +15,10 @@ class Memory:
     introduced_at: datetime
     fsrs_card: str
 
+    @property
+    def learning(self) -> bool:
+        return fsrs.Card.from_json(self.fsrs_card).state != fsrs.State.Review
+
 
 def remember(memory: Memory | None, rating: Rating, now: datetime) -> Memory:
     now = now.astimezone(UTC)
