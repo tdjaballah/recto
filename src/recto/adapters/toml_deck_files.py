@@ -6,7 +6,7 @@ from typing import Any
 from recto.domain.deck import Deck, DeckFile, SourceCard
 from recto.domain.errors import InvalidDeck
 
-EXAMPLES = ("anglais", "geographie", "vins", "maths")
+EXAMPLES = ("anglais", "geographie", "vins", "maths", "histoire-france")
 
 
 def example_decks() -> list[DeckFile]:
