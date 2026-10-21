@@ -1,6 +1,6 @@
 [project]
 name = "recto"
-version = "0.3.0"
+version = "0.4.0"
 description = "Learn things by heart with flashcards in the terminal"
 readme = "README.md"
 license = "MIT"
