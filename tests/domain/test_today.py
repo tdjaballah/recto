@@ -41,12 +41,30 @@ def test_knowledge_being_learnt_is_counted_apart_from_reviews() -> None:
     assert (today.to_review, today.learning) == (1, 3)
 
 
-def test_new_knowledge_comes_in_file_order_up_to_the_daily_limit() -> None:
-    new = [KnowledgeMother.new().with_id(f"k{n}").at_position(n).build() for n in reversed(range(15))]
+def test_new_knowledge_is_picked_at_random_up_to_the_daily_limit() -> None:
+    new = [KnowledgeMother.new().with_id(f"k{n}").at_position(n).build() for n in range(100)]
 
     today = plan_today(new, NOW)
 
-    assert [item.id for item in today.new] == [f"k{n}" for n in range(NEW_PER_DAY)]
+    assert len(today.new) == NEW_PER_DAY
+    assert [item.id for item in today.new] != [f"k{n}" for n in range(NEW_PER_DAY)]
+
+
+def test_new_knowledge_picked_stays_the_same_all_day() -> None:
+    new = [KnowledgeMother.new().with_id(f"k{n}").at_position(n).build() for n in range(100)]
+    morning = plan_today(new, NOW).new
+    first, *rest = morning
+    introduced = KnowledgeMother.new().with_id(first.id).answered(Rating.GOOD, at=NOW).build()
+
+    evening = plan_today([introduced, *(item for item in new if item.id != first.id)], NOW + timedelta(hours=10))
+
+    assert evening.new == tuple(rest)
+
+
+def test_new_knowledge_picked_changes_the_next_day() -> None:
+    new = [KnowledgeMother.new().with_id(f"k{n}").at_position(n).build() for n in range(100)]
+
+    assert plan_today(new, NOW).new != plan_today(new, NOW + timedelta(days=1)).new
 
 
 def test_knowledge_introduced_today_counts_toward_the_daily_limit() -> None:
