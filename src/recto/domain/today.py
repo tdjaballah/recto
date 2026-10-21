@@ -1,6 +1,7 @@
+import hashlib
 from collections.abc import Sequence
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from recto.domain.knowledge import Knowledge
 
@@ -45,7 +46,7 @@ def plan_today(knowledge: Sequence[Knowledge], now: datetime) -> Today:
         elif memory.due <= now + LEARN_AHEAD:
             ahead.append((memory.due, item))
 
-    new.sort(key=lambda item: item.position)
+    new.sort(key=lambda item: _shuffled(item, start_of_day.date()))
     return Today(
         due=_by_date(due),
         new=tuple(new[: max(0, NEW_PER_DAY - introduced_today)]),
@@ -55,3 +56,7 @@ def plan_today(knowledge: Sequence[Knowledge], now: datetime) -> Today:
 
 def _by_date(dated: list[tuple[datetime, Knowledge]]) -> tuple[Knowledge, ...]:
     return tuple(item for _, item in sorted(dated, key=lambda pair: pair[0]))
+
+
+def _shuffled(item: Knowledge, day: date) -> bytes:
+    return hashlib.sha256(f"{day}:{item.id}".encode()).digest()
