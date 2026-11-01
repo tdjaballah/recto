@@ -1,3 +1,4 @@
+import asyncio
 import threading
 
 from recto.domain.errors import ModelUnavailable
@@ -8,6 +9,8 @@ from recto.ports.variant_generator import VariantGenerator
 class FakeVariantGenerator(VariantGenerator):
     def __init__(self) -> None:
         self.requests: list[tuple[Knowledge, str]] = []
+        self.most_concurrent = 0
+        self._concurrent = 0
         self._calls_before_failing: int | None = None
         self._running = threading.Event()
         self._running.set()
@@ -21,16 +24,16 @@ class FakeVariantGenerator(VariantGenerator):
     def fails_after(self, calls: int) -> None:
         self._calls_before_failing = calls
 
-    def generate(self, knowledge: Knowledge, instructions: str) -> list[Variant]:
-        self._call(knowledge, instructions)
+    async def generate(self, knowledge: Knowledge, instructions: str) -> list[Variant]:
+        await self._call(knowledge, instructions)
         question = knowledge.original.question
         return [
             Variant(id=f"{knowledge.id}-{n}", question=f"{question} ({n})", answer=knowledge.original.answer)
             for n in range(1, 4)
         ]
 
-    def generate_one(self, knowledge: Knowledge, instructions: str) -> Variant:
-        self._call(knowledge, instructions)
+    async def generate_one(self, knowledge: Knowledge, instructions: str) -> Variant:
+        await self._call(knowledge, instructions)
         n = len(knowledge.variants)
         return Variant(
             id=f"{knowledge.id}-extra-{n}",
@@ -38,8 +41,13 @@ class FakeVariantGenerator(VariantGenerator):
             answer=knowledge.original.answer,
         )
 
-    def _call(self, knowledge: Knowledge, instructions: str) -> None:
-        self._running.wait(timeout=5)
+    async def _call(self, knowledge: Knowledge, instructions: str) -> None:
+        self._concurrent += 1
+        self.most_concurrent = max(self.most_concurrent, self._concurrent)
+        try:
+            await asyncio.to_thread(self._running.wait, 5)
+        finally:
+            self._concurrent -= 1
         if self._calls_before_failing is not None and len(self.requests) >= self._calls_before_failing:
             raise ModelUnavailable("the fake generator is down")
         self.requests.append((knowledge, instructions))

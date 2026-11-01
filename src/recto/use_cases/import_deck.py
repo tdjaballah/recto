@@ -1,4 +1,5 @@
-from collections.abc import Callable
+import asyncio
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
 from recto.domain.deck import DeckFile
@@ -8,6 +9,8 @@ from recto.ports.deck_repository import DeckRepository
 from recto.ports.variant_generator import VariantGenerator
 
 type Progress = Callable[[int, int], None]
+
+CONCURRENT_GENERATIONS = 8
 
 
 @dataclass(frozen=True)
@@ -30,12 +33,24 @@ class ImportDeck:
         deck = deck_file.deck
         plan = plan_import(deck.id, self._repository.knowledge(deck.id), deck_file.cards)
 
-        to_generate = (*plan.added, *plan.rewritten)
-        generated: list[Knowledge] = []
-        for done, knowledge in enumerate(to_generate, start=1):
-            generated.append(knowledge.with_variants(*self._generator.generate(knowledge, deck.instructions)))
-            on_progress(done, len(to_generate))
+        generated = asyncio.run(self._generate((*plan.added, *plan.rewritten), deck.instructions, on_progress))
 
         knowledge = sorted((*plan.kept, *generated), key=lambda item: item.position)
         self._repository.save_deck(deck, knowledge)
         return ImportReport(added=len(plan.added), regenerated=len(plan.rewritten), removed=len(plan.removed))
+
+    async def _generate(
+        self, to_generate: Sequence[Knowledge], instructions: str, on_progress: Progress
+    ) -> list[Knowledge]:
+        slots = asyncio.Semaphore(CONCURRENT_GENERATIONS)
+        done = 0
+
+        async def generate(knowledge: Knowledge) -> Knowledge:
+            nonlocal done
+            async with slots:
+                variants = await self._generator.generate(knowledge, instructions)
+            done += 1
+            on_progress(done, len(to_generate))
+            return knowledge.with_variants(*variants)
+
+        return await asyncio.gather(*(generate(knowledge) for knowledge in to_generate))

@@ -51,14 +51,14 @@ class PydanticAIVariantGenerator(VariantGenerator):
         self._variants = Agent(model, output_type=_Variants, instructions=GENERATE)
         self._one = Agent(model, output_type=_Pair, instructions=GENERATE_ONE)
 
-    def generate(self, knowledge: Knowledge, instructions: str) -> list[Variant]:
-        output = _run(self._variants, _card(knowledge, instructions))
+    async def generate(self, knowledge: Knowledge, instructions: str) -> list[Variant]:
+        output = await _run(self._variants, _card(knowledge, instructions))
         pairs = [output.reverse, *output.rephrasings] if output.reverse else output.rephrasings
         return [new_variant(pair.question, pair.answer) for pair in pairs]
 
-    def generate_one(self, knowledge: Knowledge, instructions: str) -> Variant:
+    async def generate_one(self, knowledge: Knowledge, instructions: str) -> Variant:
         existing = "\n".join(f"- {v.question} -> {v.answer}" for v in knowledge.variants)
-        pair = _run(self._one, f"{_card(knowledge, instructions)}\nExisting variants:\n{existing}")
+        pair = await _run(self._one, f"{_card(knowledge, instructions)}\nExisting variants:\n{existing}")
         return new_variant(pair.question, pair.answer)
 
 
@@ -73,7 +73,7 @@ class PydanticAIAnswerJudge(AnswerJudge):
             f"Reference answer: {variant.answer}\n"
             f"Learner's answer: {answer}"
         )
-        output = _run(self._agent, prompt)
+        output = _run_sync(self._agent, prompt)
         return Grade(score=output.score, comment=output.comment)
 
 
@@ -85,7 +85,14 @@ def _card(knowledge: Knowledge, instructions: str) -> str:
     )
 
 
-def _run[T](agent: Agent[None, T], prompt: str) -> T:
+async def _run[T](agent: Agent[None, T], prompt: str) -> T:
+    try:
+        return (await agent.run(prompt)).output
+    except (AgentRunError, UserError) as error:
+        raise ModelUnavailable(str(error)) from error
+
+
+def _run_sync[T](agent: Agent[None, T], prompt: str) -> T:
     try:
         return agent.run_sync(prompt).output
     except (AgentRunError, UserError) as error:

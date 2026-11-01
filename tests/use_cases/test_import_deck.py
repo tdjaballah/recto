@@ -4,7 +4,7 @@ from dependency_injector import providers
 from recto.domain.deck import SourceCard
 from recto.domain.errors import ModelUnavailable
 from recto.ports.deck_repository import DeckRepository
-from recto.use_cases.import_deck import ImportDeck, ImportReport
+from recto.use_cases.import_deck import CONCURRENT_GENERATIONS, ImportDeck, ImportReport
 from tests.container import build_test_container
 from tests.fakes.fake_variant_generator import FakeVariantGenerator
 from tests.object_mothers.deck_file import FRANCE, JAPAN, DeckFileMother
@@ -38,6 +38,16 @@ def test_progress_is_reported_after_each_generation() -> None:
     )
 
     assert progress == [(1, 2), (2, 2)]
+
+
+def test_variants_are_generated_concurrently_up_to_a_limit() -> None:
+    import_deck, repository, generator = setup()
+    cards = [SourceCard(f"card-{n}", f"Question {n} ?", f"Réponse {n}") for n in range(CONCURRENT_GENERATIONS * 2)]
+
+    import_deck.execute(DeckFileMother.geography().with_cards(*cards).build())
+
+    assert generator.most_concurrent == CONCURRENT_GENERATIONS
+    assert [item.id for item in repository.knowledge("geographie")] == [card.id for card in cards]
 
 
 def test_reimporting_an_unchanged_deck_generates_nothing() -> None:
