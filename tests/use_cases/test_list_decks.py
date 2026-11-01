@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from recto.domain.deck import Deck
 from recto.domain.grading import Rating
+from recto.domain.today import NEW_PER_DAY
 from recto.ports.deck_repository import DeckRepository
 from recto.use_cases.list_decks import DeckSummary, ListDecks
 from tests.container import build_test_container
@@ -35,3 +36,12 @@ def test_no_deck_lists_nothing() -> None:
     list_decks, _ = setup()
 
     assert list_decks.execute() == []
+
+
+def test_new_knowledge_asked_for_on_top_of_the_daily_limit_is_listed() -> None:
+    list_decks, repository = setup()
+    repository.save_deck(GEOGRAPHY, [KnowledgeMother.new().with_id(f"k{n}").at_position(n).build() for n in range(25)])
+
+    repository.add_extra_new("geographie", NOW.date(), NEW_PER_DAY)
+
+    assert list_decks.execute()[0].new == 2 * NEW_PER_DAY

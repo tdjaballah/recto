@@ -29,6 +29,8 @@ recto
 
 Press `i` to import a deck: one of the five examples (Anglais, Géographie, Vins, Maths, Histoire de France, 50 cards each) or your own TOML file. Then pick a deck and press enter to review, or `c` to browse its cards: pick one to see its variants, where you can add, edit, delete or generate more.
 
+Each deck brings 10 new cards a day. Once they and the day's reviews are done, recto offers to learn 10 more, as many times as you like, to get through a deck faster.
+
 | Variable | Default | |
 |---|---|---|
 | `OPENAI_API_KEY` | | Required: recto won't start without it |

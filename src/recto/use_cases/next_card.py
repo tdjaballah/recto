@@ -16,15 +16,23 @@ class Question:
     new: int
 
 
+@dataclass(frozen=True)
+class DoneForToday:
+    unseen: int
+
+
 class NextCard:
     def __init__(self, repository: DeckRepository, clock: Clock) -> None:
         self._repository = repository
         self._clock = clock
 
-    def execute(self, deck_id: str) -> Question | None:
-        today = plan_today(self._repository.knowledge(deck_id), self._clock.now())
+    def execute(self, deck_id: str) -> Question | DoneForToday:
+        now = self._clock.now()
+        today = plan_today(
+            self._repository.knowledge(deck_id), now, extra_new=self._repository.extra_new(deck_id, now.date())
+        )
         if not today.queue:
-            return None
+            return DoneForToday(unseen=today.unseen)
         knowledge = today.queue[0]
         return Question(
             knowledge=knowledge,

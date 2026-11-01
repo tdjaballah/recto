@@ -5,13 +5,14 @@ from textual import work
 from textual.app import ComposeResult
 from textual.binding import Binding, BindingType
 from textual.containers import Vertical
-from textual.screen import ModalScreen, Screen
+from textual.screen import Screen
 from textual.widgets import Footer, Header, Input, Label, OptionList, Static
 from textual.widgets.option_list import Option
 
 from recto.container import Container
 from recto.domain.errors import EmptyVariant, ModelUnavailable
 from recto.domain.knowledge import Knowledge, Variant
+from recto.tui.dialogs import Confirm, Dialog
 
 
 class VariantsScreen(Screen[None]):
@@ -136,28 +137,6 @@ class VariantsScreen(Screen[None]):
         return next((variant for variant in self._variants if option and variant.id == option.id), None)
 
 
-class Dialog[T](ModalScreen[T]):
-    DEFAULT_CSS = """
-    Dialog {
-        align: center middle;
-    }
-    Dialog > #dialog {
-        width: 80%;
-        height: auto;
-        padding: 1 2;
-        border: round $primary;
-        background: $surface;
-    }
-    """
-
-    def __init__(self, title: str) -> None:
-        super().__init__()
-        self._title = title
-
-    def on_mount(self) -> None:
-        self.query_one("#dialog").border_title = self._title
-
-
 class VariantForm(Dialog[tuple[str, str] | None]):
     BINDINGS: ClassVar[list[BindingType]] = [
         Binding("enter", "save", "Save", priority=True),
@@ -186,25 +165,6 @@ class VariantForm(Dialog[tuple[str, str] | None]):
 
     def action_cancel(self) -> None:
         self.dismiss(None)
-
-
-class Confirm(Dialog[bool]):
-    BINDINGS: ClassVar[list[BindingType]] = [
-        ("y", "answer(True)", "Yes"),
-        ("n,escape", "answer(False)", "No"),
-    ]
-
-    def __init__(self, title: str, message: str) -> None:
-        super().__init__(title)
-        self._message = message
-
-    def compose(self) -> ComposeResult:
-        with Vertical(id="dialog"):
-            yield Static(self._message, id="message", markup=False)
-        yield Footer()
-
-    def action_answer(self, yes: bool) -> None:
-        self.dismiss(yes)
 
 
 def _line(variant: Variant) -> str:

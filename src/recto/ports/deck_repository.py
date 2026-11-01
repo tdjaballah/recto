@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
+from datetime import date
 
 from recto.domain.deck import Deck
 from recto.domain.knowledge import Knowledge
@@ -31,3 +32,10 @@ class DeckRepository(ABC):
 
     @abstractmethod
     def reviews(self, deck_id: str, knowledge_id: str) -> list[Review]: ...
+
+    @abstractmethod
+    def extra_new(self, deck_id: str, day: date) -> int:
+        """How many new knowledge the learner asked for on top of the daily limit that day."""
+
+    @abstractmethod
+    def add_extra_new(self, deck_id: str, day: date, count: int) -> None: ...

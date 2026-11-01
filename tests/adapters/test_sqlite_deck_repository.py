@@ -1,4 +1,7 @@
+import sqlite3
+from contextlib import closing
 from dataclasses import replace
+from datetime import timedelta
 from pathlib import Path
 
 from recto.adapters.sqlite_deck_repository import SqliteDeckRepository
@@ -85,3 +88,29 @@ def test_decks_are_sorted_by_name(tmp_path: Path) -> None:
     repository.save_deck(GEOGRAPHY, [])
 
     assert [deck.id for deck in repository.decks()] == ["geographie", "vins"]
+
+
+def test_extra_new_knowledge_adds_up_per_deck_and_day(tmp_path: Path) -> None:
+    repository = setup(tmp_path)
+    repository.save_deck(GEOGRAPHY, [])
+
+    repository.add_extra_new("geographie", NOW.date(), 10)
+    repository.add_extra_new("geographie", NOW.date(), 10)
+
+    assert repository.extra_new("geographie", NOW.date()) == 20
+    assert repository.extra_new("geographie", NOW.date() + timedelta(days=1)) == 0
+    assert repository.extra_new("vins", NOW.date()) == 0
+
+
+def test_database_of_an_older_version_still_opens(tmp_path: Path) -> None:
+    path = tmp_path / "data" / "recto.db"
+    france = KnowledgeMother.due().build()
+    SqliteDeckRepository(path).save_deck(GEOGRAPHY, [france])
+    with closing(sqlite3.connect(path)) as conn:
+        conn.execute("DROP TABLE extra_new")
+
+    repository = SqliteDeckRepository(path)
+    repository.add_extra_new("geographie", NOW.date(), 10)
+
+    assert repository.knowledge("geographie") == [france]
+    assert repository.extra_new("geographie", NOW.date()) == 10

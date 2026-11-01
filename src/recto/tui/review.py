@@ -10,7 +10,9 @@ from recto.container import Container
 from recto.domain.deck import Deck
 from recto.domain.errors import ModelUnavailable
 from recto.domain.grading import Grade, Rating, rating_for
-from recto.use_cases.next_card import Question
+from recto.domain.today import NEW_PER_DAY
+from recto.tui.dialogs import Confirm
+from recto.use_cases.next_card import DoneForToday, Question
 
 MARKS = {Rating.GOOD: "✓", Rating.HARD: "~", Rating.AGAIN: "✗"}
 
@@ -61,9 +63,8 @@ class ReviewScreen(Screen[None]):
 
     def _ask(self) -> None:
         question = self._container.next_card().execute(self._deck.id)
-        if question is None:
-            self.app.notify("Nothing to review")
-            self.app.pop_screen()
+        if isinstance(question, DoneForToday):
+            self._done(question)
             return
         self._question = question
         self._set_graded(False)
@@ -77,6 +78,22 @@ class ReviewScreen(Screen[None]):
         answer.value = ""
         answer.disabled = False
         answer.focus()
+
+    def _done(self, done: DoneForToday) -> None:
+        if not done.unseen:
+            self.app.notify("Nothing to review")
+            self.app.pop_screen()
+            return
+
+        def learn_more(yes: bool | None) -> None:
+            if yes:
+                self._container.learn_more().execute(self._deck.id)
+                self._ask()
+            else:
+                self.app.pop_screen()
+
+        message = f"New cards not seen yet: {done.unseen}. Learn {min(NEW_PER_DAY, done.unseen)} more?"
+        self.app.push_screen(Confirm("Done for today", message), learn_more)
 
     @work(thread=True, exclusive=True)
     def _judge(self, question: Question, answer: str) -> None:
