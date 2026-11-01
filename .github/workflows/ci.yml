@@ -37,3 +37,27 @@ jobs:
       - uses: astral-sh/setup-uv@v10.3.3
       - run: uv build
       - run: uvx twine check --strict dist/*
+
+  release:
+    needs: [check, build]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+      - name: Release the version if it is new
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v$(uv version --short)"
+          if gh release view "$tag" > /dev/null 2>&1; then
+            echo "$tag is already released"
+            exit 0
+          fi
+          uv build
+          uv publish --check-url https://pypi.org/simple/
+          gh release create "$tag" dist/* --target "$GITHUB_SHA" --generate-notes
