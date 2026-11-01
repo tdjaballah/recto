@@ -1,3 +1,5 @@
+import asyncio
+
 from recto.domain.errors import DeckNotFound, KnowledgeNotFound
 from recto.domain.knowledge import Knowledge, new_variant
 from recto.ports.deck_repository import DeckRepository
@@ -60,7 +62,7 @@ class GenerateVariant:
         if deck is None:
             raise DeckNotFound(deck_id)
         knowledge = _load(self._repository, deck_id, knowledge_id)
-        knowledge = knowledge.with_variants(self._generator.generate_one(knowledge, deck.instructions))
+        knowledge = knowledge.with_variants(asyncio.run(self._generator.generate_one(knowledge, deck.instructions)))
         self._repository.save_knowledge(knowledge)
         return knowledge
 
