@@ -79,11 +79,10 @@ make check
 
 ## Release
 
-Every push builds the wheel in CI. Pushing a tag on a commit of `main` that matches the version in `pyproject.toml` publishes it on PyPI, through [trusted publishing](https://docs.pypi.org/trusted-publishers/), and as a GitHub release:
+Every push builds the wheel in CI. Once the checks pass on `main`, a version in `pyproject.toml` that has no GitHub release yet is published on PyPI, through [trusted publishing](https://docs.pypi.org/trusted-publishers/), and as a GitHub release tagged `v<version>`. Releasing is bumping the version:
 
 ```bash
 uv version --bump minor
 git commit -am "chore(release): 0.2.0"
-git tag v0.2.0
-git push origin main v0.2.0
+git push origin main
 ```
