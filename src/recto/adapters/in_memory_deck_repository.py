@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from datetime import date
 
 from recto.domain.deck import Deck
 from recto.domain.knowledge import Knowledge
@@ -11,6 +12,7 @@ class InMemoryDeckRepository(DeckRepository):
         self._decks: dict[str, Deck] = {}
         self._knowledge: dict[str, dict[str, Knowledge]] = {}
         self._reviews: list[Review] = []
+        self._extra_new: dict[tuple[str, date], int] = {}
 
     def save_deck(self, deck: Deck, knowledge: Sequence[Knowledge]) -> None:
         kept = {item.id for item in knowledge}
@@ -38,3 +40,9 @@ class InMemoryDeckRepository(DeckRepository):
 
     def reviews(self, deck_id: str, knowledge_id: str) -> list[Review]:
         return [r for r in self._reviews if (r.deck_id, r.knowledge_id) == (deck_id, knowledge_id)]
+
+    def extra_new(self, deck_id: str, day: date) -> int:
+        return self._extra_new.get((deck_id, day), 0)
+
+    def add_extra_new(self, deck_id: str, day: date, count: int) -> None:
+        self._extra_new[(deck_id, day)] = self.extra_new(deck_id, day) + count

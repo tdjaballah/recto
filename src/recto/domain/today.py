@@ -14,6 +14,7 @@ class Today:
     due: tuple[Knowledge, ...]
     new: tuple[Knowledge, ...]
     ahead: tuple[Knowledge, ...]
+    unseen: int
 
     @property
     def queue(self) -> tuple[Knowledge, ...]:
@@ -28,7 +29,7 @@ class Today:
         return sum(1 for item in (*self.due, *self.ahead) if item.memory and item.memory.learning)
 
 
-def plan_today(knowledge: Sequence[Knowledge], now: datetime) -> Today:
+def plan_today(knowledge: Sequence[Knowledge], now: datetime, extra_new: int = 0) -> Today:
     start_of_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
     due: list[tuple[datetime, Knowledge]] = []
     ahead: list[tuple[datetime, Knowledge]] = []
@@ -49,8 +50,9 @@ def plan_today(knowledge: Sequence[Knowledge], now: datetime) -> Today:
     new.sort(key=lambda item: _shuffled(item, start_of_day.date()))
     return Today(
         due=_by_date(due),
-        new=tuple(new[: max(0, NEW_PER_DAY - introduced_today)]),
+        new=tuple(new[: max(0, NEW_PER_DAY + extra_new - introduced_today)]),
         ahead=_by_date(ahead),
+        unseen=len(new),
     )
 
 

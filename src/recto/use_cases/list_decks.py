@@ -23,7 +23,9 @@ class ListDecks:
         now = self._clock.now()
         summaries: list[DeckSummary] = []
         for deck in self._repository.decks():
-            today = plan_today(self._repository.knowledge(deck.id), now)
+            today = plan_today(
+                self._repository.knowledge(deck.id), now, extra_new=self._repository.extra_new(deck.id, now.date())
+            )
             summaries.append(
                 DeckSummary(deck=deck, to_review=today.to_review, learning=today.learning, new=len(today.new))
             )

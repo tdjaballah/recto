@@ -2,7 +2,7 @@ import json
 import sqlite3
 from collections.abc import Generator, Sequence
 from contextlib import closing, contextmanager
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 
 from recto.domain.deck import Deck
@@ -48,6 +48,12 @@ CREATE TABLE IF NOT EXISTS reviews (
     rating TEXT NOT NULL,
     reviewed_at TEXT NOT NULL,
     FOREIGN KEY (deck_id, knowledge_id) REFERENCES knowledge (deck_id, id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS extra_new (
+    deck_id TEXT NOT NULL REFERENCES decks (id) ON DELETE CASCADE,
+    day TEXT NOT NULL,
+    count INTEGER NOT NULL,
+    PRIMARY KEY (deck_id, day)
 );
 """
 
@@ -144,6 +150,21 @@ class SqliteDeckRepository(DeckRepository):
             )
             for deck, knowledge, variant, answer, score, comment, rating, reviewed_at in rows
         ]
+
+    def extra_new(self, deck_id: str, day: date) -> int:
+        with self._connection() as conn:
+            row = conn.execute(
+                "SELECT count FROM extra_new WHERE deck_id = ? AND day = ?", (deck_id, day.isoformat())
+            ).fetchone()
+        return row[0] if row else 0
+
+    def add_extra_new(self, deck_id: str, day: date, count: int) -> None:
+        with self._connection() as conn:
+            conn.execute(
+                "INSERT INTO extra_new VALUES (?, ?, ?) "
+                "ON CONFLICT (deck_id, day) DO UPDATE SET count = count + excluded.count",
+                (deck_id, day.isoformat(), count),
+            )
 
     @contextmanager
     def _connection(self) -> Generator[sqlite3.Connection]:

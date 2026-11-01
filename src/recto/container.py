@@ -10,6 +10,7 @@ from recto.ports.clock import Clock
 from recto.ports.deck_repository import DeckRepository
 from recto.ports.variant_generator import VariantGenerator
 from recto.use_cases.import_deck import ImportDeck
+from recto.use_cases.learn_more import LearnMore
 from recto.use_cases.list_decks import ListDecks
 from recto.use_cases.manage_variants import (
     AddVariant,
@@ -38,6 +39,7 @@ class Container(containers.DeclarativeContainer):
     import_deck = providers.Factory(ImportDeck, repository=deck_repository, generator=variant_generator)
     list_decks = providers.Factory(ListDecks, repository=deck_repository, clock=clock)
     next_card = providers.Factory(NextCard, repository=deck_repository, clock=clock)
+    learn_more = providers.Factory(LearnMore, repository=deck_repository, clock=clock)
     submit_answer = providers.Factory(SubmitAnswer, repository=deck_repository, judge=answer_judge, clock=clock)
     list_knowledge = providers.Factory(ListKnowledge, repository=deck_repository)
     get_knowledge = providers.Factory(GetKnowledge, repository=deck_repository)

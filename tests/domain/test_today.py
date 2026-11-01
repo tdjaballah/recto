@@ -86,3 +86,21 @@ def test_knowledge_introduced_yesterday_does_not_count() -> None:
     new = [KnowledgeMother.new().with_id(f"k{n}").at_position(n).build() for n in range(15)]
 
     assert len(plan_today([introduced, *new], NOW).new) == NEW_PER_DAY
+
+
+def test_extra_new_knowledge_raises_the_daily_limit() -> None:
+    introduced = [
+        KnowledgeMother.new().with_id(f"seen{n}").introduced_at(NOW).due_at(NOW + timedelta(days=1)).build()
+        for n in range(NEW_PER_DAY)
+    ]
+    new = [KnowledgeMother.new().with_id(f"k{n}").at_position(n).build() for n in range(15)]
+
+    assert plan_today([*introduced, *new], NOW).new == ()
+    assert len(plan_today([*introduced, *new], NOW, extra_new=NEW_PER_DAY).new) == NEW_PER_DAY
+
+
+def test_knowledge_never_seen_is_counted_beyond_the_daily_limit() -> None:
+    new = [KnowledgeMother.new().with_id(f"k{n}").at_position(n).build() for n in range(15)]
+    seen = KnowledgeMother.due().with_id("seen").build()
+
+    assert plan_today([seen, *new], NOW).unseen == 15
