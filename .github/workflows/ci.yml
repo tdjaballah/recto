@@ -22,7 +22,7 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ty check
       - run: uv run pytest --junitxml=junit.xml -o junit_family=xunit1
-      - uses: mikepenz/action-junit-report@v6.6.1
+      - uses: mikepenz/action-junit-report@v6.7.0
         if: ${{ !cancelled() }}
         with:
           report_paths: junit.xml
