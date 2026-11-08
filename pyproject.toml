@@ -23,10 +23,12 @@ requires-python = ">=3.12"
 dependencies = [
     "dependency-injector>=4.49.1",
     "fsrs>=6.3.2",
+    "pillow>=13.0.0",
     "platformdirs>=4.13.3",
     "pydantic-ai-slim[openai]>=2.57.0",
     "pydantic-settings>=2.16.0",
     "textual>=8.2.8",
+    "textual-image>=0.14.2",
 ]
 
 [project.urls]

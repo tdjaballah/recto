@@ -43,7 +43,7 @@ class Container(containers.DeclarativeContainer):
         ImportDeck, repository=deck_repository, generator=variant_generator, images=image_store
     )
     list_decks = providers.Factory(ListDecks, repository=deck_repository, clock=clock)
-    next_card = providers.Factory(NextCard, repository=deck_repository, clock=clock)
+    next_card = providers.Factory(NextCard, repository=deck_repository, clock=clock, images=image_store)
     learn_more = providers.Factory(LearnMore, repository=deck_repository, clock=clock)
     submit_answer = providers.Factory(SubmitAnswer, repository=deck_repository, judge=answer_judge, clock=clock)
     list_knowledge = providers.Factory(ListKnowledge, repository=deck_repository)

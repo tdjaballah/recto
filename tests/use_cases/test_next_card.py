@@ -1,4 +1,5 @@
 from datetime import timedelta
+from pathlib import Path
 
 from recto.domain.deck import Deck
 from recto.domain.knowledge import Variant
@@ -29,6 +30,17 @@ def test_due_knowledge_is_asked_before_new_knowledge() -> None:
     assert isinstance(question, Question)
     assert question.knowledge.id == "due"
     assert (question.to_review, question.learning, question.new) == (1, 0, 1)
+    assert question.image is None
+
+
+def test_question_comes_with_the_path_of_its_image() -> None:
+    next_card, repository = setup()
+    repository.save_deck(GEOGRAPHY, [KnowledgeMother.new().with_image("abc.png").build()])
+
+    question = next_card.execute("geographie")
+
+    assert isinstance(question, Question)
+    assert question.image == Path("fake-images") / "abc.png"
 
 
 def test_question_is_one_of_the_knowledge_variants() -> None:

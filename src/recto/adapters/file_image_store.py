@@ -30,6 +30,9 @@ class FileImageStore(ImageStore):
             os.replace(partial, target)
         return name
 
+    def path(self, name: str) -> Path:
+        return self._directory / name
+
 
 def _read(directory: Path, declared: str) -> bytes:
     try:

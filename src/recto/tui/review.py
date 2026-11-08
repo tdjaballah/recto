@@ -1,10 +1,13 @@
+from pathlib import Path
 from typing import ClassVar
 
+from PIL import Image
 from textual import work
 from textual.app import ComposeResult
 from textual.binding import Binding, BindingType
 from textual.screen import Screen
 from textual.widgets import Footer, Header, Input, LoadingIndicator, Static
+from textual_image.widget import Image as ImageView
 
 from recto.container import Container
 from recto.domain.deck import Deck
@@ -18,6 +21,12 @@ MARKS = {Rating.GOOD: "✓", Rating.HARD: "~", Rating.AGAIN: "✗"}
 
 
 class ReviewScreen(Screen[None]):
+    DEFAULT_CSS = """
+    ReviewScreen #image {
+        width: auto;
+        height: 40%;
+    }
+    """
     BINDINGS: ClassVar[list[BindingType]] = [
         Binding("enter", "next", "Next"),
         Binding("escape", "app.pop_screen", "Back"),
@@ -34,6 +43,8 @@ class ReviewScreen(Screen[None]):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Static("", id="progress", markup=False)
+        yield ImageView(id="image")
+        yield Static("Image unavailable", id="image-error", markup=False)
         yield Static("", id="question", markup=False)
         yield Input(id="answer", select_on_focus=False)
         yield LoadingIndicator(id="judging")
@@ -43,6 +54,7 @@ class ReviewScreen(Screen[None]):
 
     def on_mount(self) -> None:
         self.query_one("#judging").display = False
+        self._show_image(None)
         self._ask()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
@@ -71,6 +83,7 @@ class ReviewScreen(Screen[None]):
         self.query_one("#progress", Static).update(
             f"{question.to_review} to review · {question.learning} learning · {question.new} new"
         )
+        self._show_image(question.image)
         self.query_one("#question", Static).update(question.variant.question)
         self.query_one("#grade", Static).update("")
         self.query_one("#expected", Static).update("")
@@ -78,6 +91,13 @@ class ReviewScreen(Screen[None]):
         answer.value = ""
         answer.disabled = False
         answer.focus()
+
+    def _show_image(self, path: Path | None) -> None:
+        picture = _open(path) if path else None
+        image = self.query_one("#image", ImageView)
+        image.image = picture
+        image.display = picture is not None
+        self.query_one("#image-error").display = path is not None and picture is None
 
     def _done(self, done: DoneForToday) -> None:
         if not done.unseen:
@@ -128,3 +148,12 @@ class ReviewScreen(Screen[None]):
     def _set_graded(self, graded: bool) -> None:
         self._graded = graded
         self.refresh_bindings()
+
+
+def _open(path: Path) -> Image.Image | None:
+    try:
+        with Image.open(path) as picture:
+            picture.load()
+    except (OSError, Image.DecompressionBombError):
+        return None
+    return picture

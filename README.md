@@ -52,7 +52,7 @@ question = "Quel cépage domine les vins blancs de Chablis ?"
 answer = "Chardonnay"
 ```
 
-The file name is the deck id: importing `vins.toml` again updates the same deck. `instructions` is optional and is given to the model when it writes variants and grades answers. Each card needs an `id`, unique in the deck. A card may also have an `image`: the path of a PNG or JPEG of at most 5 MB, relative to the deck file and inside its folder. Recto keeps its own copy of it, made when the deck is imported. Fixing a typo in a question keeps the card's history and regenerates its variants; changing its `id` starts it over. Cards removed from the file are removed from the deck.
+The file name is the deck id: importing `vins.toml` again updates the same deck. `instructions` is optional and is given to the model when it writes variants and grades answers. Each card needs an `id`, unique in the deck. A card may also have an `image`: the path of a PNG or JPEG of at most 5 MB, relative to the deck file and inside its folder. Recto keeps its own copy of it, made when the deck is imported, and shows it above the question: as is in terminals that support Sixel or the Kitty graphics protocol, in coloured blocks elsewhere. Fixing a typo in a question keeps the card's history and regenerates its variants; changing its `id` starts it over. Cards removed from the file are removed from the deck.
 
 ## How the code is organized
 
