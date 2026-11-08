@@ -51,7 +51,7 @@ question = "Quel cépage domine les vins blancs de Chablis ?"
 answer = "Chardonnay"
 ```
 
-The file name is the deck id: importing `vins.toml` again updates the same deck. `instructions` is optional and is given to the model when it writes variants and grades answers. Each card needs an `id`, unique in the deck. Fixing a typo in a question keeps the card's history and regenerates its variants; changing its `id` starts it over. Cards removed from the file are removed from the deck.
+The file name is the deck id: importing `vins.toml` again updates the same deck. `instructions` is optional and is given to the model when it writes variants and grades answers. Each card needs an `id`, unique in the deck. A card may also have an `image`: the path of a picture, relative to the deck file. Fixing a typo in a question keeps the card's history and regenerates its variants; changing its `id` starts it over. Cards removed from the file are removed from the deck.
 
 ## How the code is organized
 

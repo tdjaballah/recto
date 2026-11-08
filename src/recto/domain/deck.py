@@ -14,6 +14,7 @@ class SourceCard:
     id: str
     question: str
     answer: str
+    image: str | None = None  # the path written in the deck file, relative to it
 
 
 @dataclass(frozen=True)
