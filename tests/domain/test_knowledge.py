@@ -13,6 +13,7 @@ def test_new_knowledge_has_only_its_original_variant() -> None:
 
     assert knowledge.variants == (Variant(id=ORIGINAL, question="Capitale de la France ?", answer="Paris"),)
     assert knowledge.memory is None
+    assert knowledge.image is None
 
 
 def test_new_variant_is_trimmed_and_gets_its_own_id() -> None:

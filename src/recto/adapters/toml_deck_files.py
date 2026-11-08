@@ -47,7 +47,10 @@ def parse_deck(deck_id: str, text: str) -> DeckFile:
         if not isinstance(raw, dict):
             raise InvalidDeck(f"{where} is not a table")
         card = SourceCard(
-            id=_text(raw, "id", where), question=_text(raw, "question", where), answer=_text(raw, "answer", where)
+            id=_text(raw, "id", where),
+            question=_text(raw, "question", where),
+            answer=_text(raw, "answer", where),
+            image=_text(raw, "image", where, required=False) or None,
         )
         if any(card.id == other.id for other in cards):
             raise InvalidDeck(f"Duplicate card id: {card.id}")

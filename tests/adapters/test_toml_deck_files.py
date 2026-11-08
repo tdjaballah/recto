@@ -32,6 +32,19 @@ def test_instructions_are_optional() -> None:
     assert deck_file.deck.instructions == ""
 
 
+def test_card_image_is_read_as_written() -> None:
+    deck_file = parse_deck("geographie", VALID + 'image = " images/france.png "\n')
+
+    assert deck_file.cards == (SourceCard("france", "Capitale de la France ?", "Paris", "images/france.png"),)
+
+
+@pytest.mark.parametrize("image", ["", 'image = ""', 'image = "  "'])
+def test_card_image_is_optional(image: str) -> None:
+    deck_file = parse_deck("geographie", VALID + image)
+
+    assert deck_file.cards[0].image is None
+
+
 @pytest.mark.parametrize(
     ("text", "message"),
     [
@@ -41,6 +54,8 @@ def test_instructions_are_optional() -> None:
         (VALID.replace('name = "Géographie"', ""), "[deck]: name is missing"),
         (VALID.replace('answer = " Paris "', 'answer = "  "'), "card 1: answer is missing"),
         (VALID.replace('answer = " Paris "', "answer = 42"), "card 1: answer must be text"),
+        (VALID + "image = 42", "card 1: image must be text"),
+        (VALID + 'image = ["images/france.png"]', "card 1: image must be text"),
         (VALID + '\n[[cards]]\nid = "france"\nquestion = "Q"\nanswer = "A"', "Duplicate card id: france"),
     ],
 )

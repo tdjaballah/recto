@@ -34,6 +34,7 @@ class Knowledge:
     position: int
     variants: tuple[Variant, ...]
     memory: Memory | None = None
+    image: str | None = None  # recto's own copy of the card's image, not the path in the deck file
 
     @property
     def original(self) -> Variant:
