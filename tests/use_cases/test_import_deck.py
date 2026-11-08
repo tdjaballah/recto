@@ -1,20 +1,40 @@
+from dataclasses import replace
+from pathlib import Path
+
 import pytest
 from dependency_injector import providers
 
-from recto.domain.deck import SourceCard
-from recto.domain.errors import ModelUnavailable
+from recto.domain.deck import DeckFile, SourceCard
+from recto.domain.errors import InvalidDeck, ModelUnavailable
 from recto.ports.deck_repository import DeckRepository
 from recto.use_cases.import_deck import CONCURRENT_GENERATIONS, ImportDeck, ImportReport
 from tests.container import build_test_container
+from tests.fakes.fake_image_store import FakeImageStore
 from tests.fakes.fake_variant_generator import FakeVariantGenerator
 from tests.object_mothers.deck_file import FRANCE, JAPAN, DeckFileMother
+from tests.object_mothers.knowledge import KnowledgeMother
+
+DECK_FOLDER = Path("/decks")
 
 
-def setup() -> tuple[ImportDeck, DeckRepository, FakeVariantGenerator]:
+def setup(images: FakeImageStore | None = None) -> tuple[ImportDeck, DeckRepository, FakeVariantGenerator]:
     generator = FakeVariantGenerator()
-    container = build_test_container(variant_generator=providers.Object(generator))
+    container = build_test_container(
+        variant_generator=providers.Object(generator), image_store=providers.Object(images or FakeImageStore())
+    )
 
     return container.import_deck(), container.deck_repository(), generator
+
+
+def with_france_image(image: str | None, *cards: SourceCard) -> DeckFile:
+    france = replace(FRANCE, image=image)
+    return DeckFileMother.geography().in_directory(DECK_FOLDER).with_cards(france, *(cards or (JAPAN,))).build()
+
+
+def image_of(repository: DeckRepository, knowledge_id: str) -> str | None:
+    knowledge = repository.get_knowledge("geographie", knowledge_id)
+    assert knowledge is not None
+    return knowledge.image
 
 
 def test_imported_knowledge_gets_generated_variants() -> None:
@@ -77,5 +97,68 @@ def test_failed_generation_saves_nothing() -> None:
 
     with pytest.raises(ModelUnavailable):
         import_deck.execute(DeckFileMother.geography().with_cards(FRANCE, JAPAN).build())
+
+    assert repository.decks() == []
+
+
+def test_card_images_are_stored_and_referenced() -> None:
+    images = FakeImageStore()
+    import_deck, repository, _ = setup(images)
+
+    import_deck.execute(with_france_image("images/france.png"))
+
+    assert images.requests == [(DECK_FOLDER, "images/france.png")]
+    assert image_of(repository, "france") == "stored-images/france.png"
+    assert image_of(repository, "japon") is None
+
+
+def test_reimport_follows_a_changed_or_removed_image_and_keeps_the_progress() -> None:
+    import_deck, repository, generator = setup()
+    import_deck.execute(with_france_image("images/france.png"))
+    france = repository.get_knowledge("geographie", "france")
+    assert france is not None
+    repository.save_knowledge(replace(france, memory=KnowledgeMother.due().build().memory))
+    progressed = repository.get_knowledge("geographie", "france")
+    assert progressed is not None
+
+    for image, stored in (("images/france-2.png", "stored-images/france-2.png"), (None, None)):
+        report = import_deck.execute(with_france_image(image))
+
+        assert report == ImportReport(added=0, regenerated=0, removed=0)
+        assert repository.get_knowledge("geographie", "france") == replace(progressed, image=stored)
+    assert len(generator.requests) == 2
+
+
+def test_unusable_image_saves_nothing_and_asks_no_model() -> None:
+    images = FakeImageStore()
+    import_deck, repository, generator = setup(images)
+    import_deck.execute(with_france_image("images/france.png"))
+    images.rejects("images/broken.png")
+
+    with pytest.raises(InvalidDeck, match=r"Image images/broken\.png: not found"):
+        import_deck.execute(with_france_image("images/france.png", SourceCard("japon", "Q", "A", "images/broken.png")))
+
+    assert image_of(repository, "france") == "stored-images/france.png"
+    assert image_of(repository, "japon") is None
+    assert len(generator.requests) == 2
+
+
+def test_failed_generation_keeps_the_previous_image() -> None:
+    import_deck, repository, generator = setup()
+    import_deck.execute(with_france_image("images/france.png"))
+    generator.fails_after(len(generator.requests))
+
+    with pytest.raises(ModelUnavailable):
+        import_deck.execute(with_france_image("images/france-2.png", replace(JAPAN, question="Capitale nippone ?")))
+
+    assert image_of(repository, "france") == "stored-images/france.png"
+
+
+def test_image_needs_a_deck_folder() -> None:
+    import_deck, repository, _ = setup()
+    deck_file = DeckFileMother.geography().with_cards(replace(FRANCE, image="images/france.png")).build()
+
+    with pytest.raises(InvalidDeck, match=r"Image images/france\.png: no deck folder to find it in"):
+        import_deck.execute(deck_file)
 
     assert repository.decks() == []

@@ -9,5 +9,6 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="RECTO_")
 
     db: Path = Path(user_data_dir("recto")) / "recto.db"
+    images: Path = Path(user_data_dir("recto")) / "images"
     model: str = "gpt-5.4-mini"
     openai_api_key: str = Field(validation_alias="OPENAI_API_KEY")

@@ -2,12 +2,14 @@ from dependency_injector import containers, providers
 from pydantic_ai.models.openai import OpenAIResponsesModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
+from recto.adapters.file_image_store import FileImageStore
 from recto.adapters.pydantic_ai_models import PydanticAIAnswerJudge, PydanticAIVariantGenerator
 from recto.adapters.sqlite_deck_repository import SqliteDeckRepository
 from recto.adapters.system_clock import SystemClock
 from recto.ports.answer_judge import AnswerJudge
 from recto.ports.clock import Clock
 from recto.ports.deck_repository import DeckRepository
+from recto.ports.image_store import ImageStore
 from recto.ports.variant_generator import VariantGenerator
 from recto.use_cases.import_deck import ImportDeck
 from recto.use_cases.learn_more import LearnMore
@@ -28,6 +30,7 @@ class Container(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     deck_repository: providers.Provider[DeckRepository] = providers.Singleton(SqliteDeckRepository, path=config.db)
+    image_store: providers.Provider[ImageStore] = providers.Singleton(FileImageStore, directory=config.images)
     openai = providers.Singleton(OpenAIProvider, api_key=config.openai_api_key)
     model = providers.Singleton(OpenAIResponsesModel, config.model, provider=openai)
     variant_generator: providers.Provider[VariantGenerator] = providers.Singleton(
@@ -36,7 +39,9 @@ class Container(containers.DeclarativeContainer):
     answer_judge: providers.Provider[AnswerJudge] = providers.Singleton(PydanticAIAnswerJudge, model=model)
     clock: providers.Provider[Clock] = providers.Singleton(SystemClock)
 
-    import_deck = providers.Factory(ImportDeck, repository=deck_repository, generator=variant_generator)
+    import_deck = providers.Factory(
+        ImportDeck, repository=deck_repository, generator=variant_generator, images=image_store
+    )
     list_decks = providers.Factory(ListDecks, repository=deck_repository, clock=clock)
     next_card = providers.Factory(NextCard, repository=deck_repository, clock=clock)
     learn_more = providers.Factory(LearnMore, repository=deck_repository, clock=clock)

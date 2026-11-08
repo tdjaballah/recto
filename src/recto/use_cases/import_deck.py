@@ -3,9 +3,11 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
 from recto.domain.deck import DeckFile
+from recto.domain.errors import InvalidDeck
 from recto.domain.importing import plan_import
 from recto.domain.knowledge import Knowledge
 from recto.ports.deck_repository import DeckRepository
+from recto.ports.image_store import ImageStore
 from recto.ports.variant_generator import VariantGenerator
 
 type Progress = Callable[[int, int], None]
@@ -25,19 +27,31 @@ def _ignore(done: int, total: int) -> None:
 
 
 class ImportDeck:
-    def __init__(self, repository: DeckRepository, generator: VariantGenerator) -> None:
+    def __init__(self, repository: DeckRepository, generator: VariantGenerator, images: ImageStore) -> None:
         self._repository = repository
         self._generator = generator
+        self._images = images
 
     def execute(self, deck_file: DeckFile, on_progress: Progress = _ignore) -> ImportReport:
         deck = deck_file.deck
-        plan = plan_import(deck.id, self._repository.knowledge(deck.id), deck_file.cards)
+        images = self._store_images(deck_file)
+        plan = plan_import(deck.id, self._repository.knowledge(deck.id), deck_file.cards, images)
 
         generated = asyncio.run(self._generate((*plan.added, *plan.rewritten), deck.instructions, on_progress))
 
         knowledge = sorted((*plan.kept, *generated), key=lambda item: item.position)
         self._repository.save_deck(deck, knowledge)
         return ImportReport(added=len(plan.added), regenerated=len(plan.rewritten), removed=len(plan.removed))
+
+    def _store_images(self, deck_file: DeckFile) -> dict[str, str]:
+        images: dict[str, str] = {}
+        for card in deck_file.cards:
+            if card.image is None:
+                continue
+            if deck_file.directory is None:
+                raise InvalidDeck(f"Image {card.image}: no deck folder to find it in")
+            images[card.id] = self._images.store(deck_file.directory, card.image)
+        return images
 
     async def _generate(
         self, to_generate: Sequence[Knowledge], instructions: str, on_progress: Progress
