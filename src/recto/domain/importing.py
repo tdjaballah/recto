@@ -26,8 +26,8 @@ def plan_import(
         image = images.get(card.id)
         if item is None:
             added.append(replace(new_knowledge(deck_id, card, position), image=image))
-        elif item.matches(card):
-            kept.append(replace(item, position=position, image=image))
+        elif item.matches(card) and item.image == image:
+            kept.append(replace(item, position=position))
         else:
             rewritten.append(replace(item.rewritten(card, position), image=image))
 

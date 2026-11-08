@@ -29,8 +29,18 @@ def test_answer_is_judged_against_the_variant_asked() -> None:
     grade = submit_answer.execute("geographie", "france", "original", " paris ")
 
     assert grade == Grade(1.0, "Exact.")
-    variant, answer, instructions = judge.requests[0]
-    assert (variant.answer, answer, instructions) == ("Paris", "paris", "Réponds en français.")
+    variant, answer, instructions, image = judge.requests[0]
+    assert (variant.answer, answer, instructions, image) == ("Paris", "paris", "Réponds en français.", None)
+
+
+def test_answer_is_judged_with_the_image_of_the_card() -> None:
+    submit_answer, repository, judge = setup()
+    repository.save_knowledge(KnowledgeMother.new().with_image("france.png").build())
+    judge.will_grade(Grade(1.0, "Exact."))
+
+    submit_answer.execute("geographie", "france", "original", "Paris")
+
+    assert judge.requests[0][3] == "france.png"
 
 
 def test_judged_answer_schedules_the_knowledge_and_is_logged() -> None:

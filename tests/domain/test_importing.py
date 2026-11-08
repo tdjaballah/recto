@@ -1,5 +1,3 @@
-from dataclasses import replace
-
 from recto.domain.deck import SourceCard
 from recto.domain.importing import plan_import
 from recto.domain.knowledge import Variant
@@ -62,8 +60,22 @@ def test_stored_image_is_given_to_the_knowledge() -> None:
         SourceCard("coree", "Capitale de la Corée ?", "Séoul"),
     ]
 
-    plan = plan_import("geographie", [france, japan], cards, {"france": "b.png", "coree": "coree.png"})
+    plan = plan_import("geographie", [france, japan], cards, {"france": "a.png", "coree": "coree.png"})
 
-    assert plan.kept == (replace(france, image="b.png"),)
+    assert plan.kept == (france,)
     assert [(item.id, item.image, item.memory) for item in plan.rewritten] == [("japon", None, japan.memory)]
     assert [(item.id, item.image) for item in plan.added] == [("coree", "coree.png")]
+
+
+def test_card_with_a_changed_image_is_rewritten() -> None:
+    known = (
+        KnowledgeMother.due().with_variants(Variant("r", "Capitale française ?", "Paris")).with_image("a.png").build()
+    )
+
+    for images in ({"france": "b.png"}, {}):
+        plan = plan_import("geographie", [known], [FRANCE], images)
+
+        assert plan.kept == ()
+        assert [(item.image, item.memory, item.variants) for item in plan.rewritten] == [
+            (images.get("france"), known.memory, (known.original,))
+        ]

@@ -25,7 +25,7 @@ class SubmitAnswer:
         variant = knowledge.variant(variant_id)
 
         answer = answer.strip()
-        grade = self._judge.judge(variant, answer, deck.instructions) if answer else NO_ANSWER
+        grade = self._judge.judge(variant, answer, deck.instructions, knowledge.image) if answer else NO_ANSWER
         rating = rating_for(grade.score)
         now = self._clock.now()
 
