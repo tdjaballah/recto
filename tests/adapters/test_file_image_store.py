@@ -33,6 +33,13 @@ def test_png_is_stored_under_the_hash_of_its_content(tmp_path: Path) -> None:
     assert stored(images) == [name]
 
 
+def test_stored_image_is_found_by_its_name(tmp_path: Path) -> None:
+    store, deck, _ = setup(tmp_path)
+    (deck / "images" / "france.png").write_bytes(PNG)
+
+    assert store.path(store.store(deck, "images/france.png")).read_bytes() == PNG
+
+
 def test_jpeg_is_stored_as_jpg(tmp_path: Path) -> None:
     store, deck, _ = setup(tmp_path)
     (deck / "france.jpeg").write_bytes(JPEG)

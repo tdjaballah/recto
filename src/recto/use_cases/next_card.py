@@ -1,10 +1,12 @@
 import random
 from dataclasses import dataclass
+from pathlib import Path
 
 from recto.domain.knowledge import Knowledge, Variant
 from recto.domain.today import plan_today
 from recto.ports.clock import Clock
 from recto.ports.deck_repository import DeckRepository
+from recto.ports.image_store import ImageStore
 
 
 @dataclass(frozen=True)
@@ -14,6 +16,7 @@ class Question:
     to_review: int
     learning: int
     new: int
+    image: Path | None
 
 
 @dataclass(frozen=True)
@@ -22,9 +25,10 @@ class DoneForToday:
 
 
 class NextCard:
-    def __init__(self, repository: DeckRepository, clock: Clock) -> None:
+    def __init__(self, repository: DeckRepository, clock: Clock, images: ImageStore) -> None:
         self._repository = repository
         self._clock = clock
+        self._images = images
 
     def execute(self, deck_id: str) -> Question | DoneForToday:
         now = self._clock.now()
@@ -40,4 +44,5 @@ class NextCard:
             to_review=today.to_review,
             learning=today.learning,
             new=len(today.new),
+            image=self._images.path(knowledge.image) if knowledge.image else None,
         )

@@ -17,3 +17,6 @@ class FakeImageStore(ImageStore):
         if declared in self._rejected:
             raise InvalidDeck(f"Image {declared}: not found")
         return f"stored-{declared}"
+
+    def path(self, name: str) -> Path:
+        return Path("fake-images") / name

@@ -1,12 +1,17 @@
+import io
 from datetime import timedelta
+from pathlib import Path
 
+import pytest
 from dependency_injector import providers
+from PIL import Image
 from textual.widgets import Input, Static
 
+from recto.adapters.file_image_store import FileImageStore
 from recto.adapters.in_memory_deck_repository import InMemoryDeckRepository
-from recto.domain.deck import Deck
+from recto.domain.deck import Deck, SourceCard
 from recto.domain.grading import Grade
-from recto.domain.knowledge import Knowledge
+from recto.domain.knowledge import Knowledge, new_knowledge
 from recto.domain.today import NEW_PER_DAY
 from recto.tui.app import RectoApp
 from recto.tui.decks import DecksScreen
@@ -26,6 +31,32 @@ def setup() -> tuple[RectoApp, InMemoryDeckRepository, FakeAnswerJudge]:
     container = build_test_container(deck_repository=providers.Object(repository), answer_judge=providers.Object(judge))
 
     return RectoApp(container), repository, judge
+
+
+def setup_with_image(
+    tmp_path: Path, image: bytes | None, *others: Knowledge
+) -> tuple[RectoApp, InMemoryDeckRepository, FakeAnswerJudge]:
+    images = FileImageStore(tmp_path / "images")
+    name = "missing.png"
+    if image is not None:
+        (tmp_path / "france.png").write_bytes(image)
+        name = images.store(tmp_path, "france.png")
+    repository = InMemoryDeckRepository()
+    repository.save_deck(GEOGRAPHY, [KnowledgeMother.due().with_image(name).build(), *others])
+    judge = FakeAnswerJudge()
+    container = build_test_container(
+        deck_repository=providers.Object(repository),
+        answer_judge=providers.Object(judge),
+        image_store=providers.Object(images),
+    )
+
+    return RectoApp(container), repository, judge
+
+
+def red_square() -> bytes:
+    png = io.BytesIO()
+    Image.new("RGB", (40, 40), "red").save(png, "PNG")
+    return png.getvalue()
 
 
 def text(app: RectoApp, widget_id: str) -> str:
@@ -176,3 +207,74 @@ async def test_declining_to_learn_more_goes_back_to_the_decks() -> None:
 
         assert isinstance(app.screen, DecksScreen)
         assert repository.extra_new("geographie", NOW.date()) == 0
+
+
+async def test_image_of_the_card_is_shown_above_the_question(tmp_path: Path) -> None:
+    app, _, _ = setup_with_image(tmp_path, red_square())
+
+    async with app.run_test() as pilot:
+        await pilot.press("enter")
+
+        image = app.screen.query_one("#image")
+        assert image.display
+        assert not app.screen.query_one("#image-error").display
+        assert image.region.height > 0
+        assert image.region.bottom <= app.screen.query_one("#question").region.y
+
+
+async def test_card_without_image_shows_none() -> None:
+    app, _, _ = setup()
+
+    async with app.run_test() as pilot:
+        await pilot.press("enter")
+
+        assert not app.screen.query_one("#image").display
+        assert not app.screen.query_one("#image-error").display
+
+
+@pytest.mark.parametrize("image", [None, b"\x89PNG\r\n\x1a\n" + b"no pixels"], ids=["missing", "corrupt"])
+async def test_unreadable_image_is_reported_and_the_card_can_be_answered(tmp_path: Path, image: bytes | None) -> None:
+    app, _, judge = setup_with_image(tmp_path, image)
+    judge.will_grade(Grade(1.0, "Exact."))
+
+    async with app.run_test() as pilot:
+        await pilot.press("enter")
+
+        assert not app.screen.query_one("#image").display
+        assert text(app, "#image-error") == "Image unavailable"
+        assert text(app, "#question") == "Capitale de la France ?"
+
+        await pilot.press(*"paris", "enter")
+        await app.workers.wait_for_complete()
+        await pilot.pause()
+
+        assert text(app, "#grade") == "✓ 100 %   Exact."
+
+
+async def test_next_card_without_image_hides_the_previous_one(tmp_path: Path) -> None:
+    japan = new_knowledge("geographie", SourceCard("japon", "Capitale du Japon ?", "Tokyo"), 1)
+    app, _, judge = setup_with_image(tmp_path, red_square(), japan)
+    judge.will_grade(Grade(1.0, "Exact."))
+
+    async with app.run_test() as pilot:
+        await pilot.press("enter", *"paris", "enter")
+        await app.workers.wait_for_complete()
+        await pilot.pause()
+        await pilot.press("enter")
+
+        assert text(app, "#question") == "Capitale du Japon ?"
+        assert not app.screen.query_one("#image").display
+        assert not app.screen.query_one("#image-error").display
+
+
+async def test_no_image_is_shown_behind_the_done_for_today_dialog() -> None:
+    app, repository, _ = setup()
+    repository.save_deck(GEOGRAPHY, done_for_today(unseen=15))
+
+    async with app.run_test() as pilot:
+        await pilot.press("enter")
+
+        review = app.screen_stack[-2]
+        assert isinstance(review, ReviewScreen)
+        assert not review.query_one("#image").display
+        assert not review.query_one("#image-error").display
