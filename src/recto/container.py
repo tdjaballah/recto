@@ -34,9 +34,11 @@ class Container(containers.DeclarativeContainer):
     openai = providers.Singleton(OpenAIProvider, api_key=config.openai_api_key)
     model = providers.Singleton(OpenAIResponsesModel, config.model, provider=openai)
     variant_generator: providers.Provider[VariantGenerator] = providers.Singleton(
-        PydanticAIVariantGenerator, model=model
+        PydanticAIVariantGenerator, model=model, images=image_store
     )
-    answer_judge: providers.Provider[AnswerJudge] = providers.Singleton(PydanticAIAnswerJudge, model=model)
+    answer_judge: providers.Provider[AnswerJudge] = providers.Singleton(
+        PydanticAIAnswerJudge, model=model, images=image_store
+    )
     clock: providers.Provider[Clock] = providers.Singleton(SystemClock)
 
     import_deck = providers.Factory(

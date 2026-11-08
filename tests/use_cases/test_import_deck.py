@@ -112,7 +112,7 @@ def test_card_images_are_stored_and_referenced() -> None:
     assert image_of(repository, "japon") is None
 
 
-def test_reimport_follows_a_changed_or_removed_image_and_keeps_the_progress() -> None:
+def test_reimport_regenerates_a_card_whose_image_changed_and_keeps_its_progress() -> None:
     import_deck, repository, generator = setup()
     import_deck.execute(with_france_image("images/france.png"))
     france = repository.get_knowledge("geographie", "france")
@@ -124,9 +124,12 @@ def test_reimport_follows_a_changed_or_removed_image_and_keeps_the_progress() ->
     for image, stored in (("images/france-2.png", "stored-images/france-2.png"), (None, None)):
         report = import_deck.execute(with_france_image(image))
 
-        assert report == ImportReport(added=0, regenerated=0, removed=0)
-        assert repository.get_knowledge("geographie", "france") == replace(progressed, image=stored)
-    assert len(generator.requests) == 2
+        assert report == ImportReport(added=0, regenerated=1, removed=0)
+        france = repository.get_knowledge("geographie", "france")
+        assert france is not None
+        assert (france.image, france.memory) == (stored, progressed.memory)
+        assert generator.requests[-1][0].image == stored
+    assert len(generator.requests) == 4
 
 
 def test_unusable_image_saves_nothing_and_asks_no_model() -> None:
