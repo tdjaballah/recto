@@ -68,7 +68,7 @@ class ImportScreen(Screen[None]):
         self.app.call_from_thread(self._show, "Generating variants…")
         try:
             report = self._container.import_deck().execute(deck_file, on_progress=progress)
-        except ModelUnavailable as error:
+        except (InvalidDeck, ModelUnavailable) as error:
             self.app.call_from_thread(self._failed, f"Import failed: {error}")
             return None
         return (

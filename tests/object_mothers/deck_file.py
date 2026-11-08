@@ -1,4 +1,5 @@
 from dataclasses import replace
+from pathlib import Path
 from typing import Self
 
 from recto.domain.deck import Deck, DeckFile, SourceCard
@@ -26,6 +27,10 @@ class DeckFileMother:
 
     def with_cards(self, *cards: SourceCard) -> Self:
         self._deck_file = replace(self._deck_file, cards=cards)
+        return self
+
+    def in_directory(self, directory: Path) -> Self:
+        self._deck_file = replace(self._deck_file, directory=directory)
         return self
 
     def build(self) -> DeckFile:

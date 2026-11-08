@@ -8,6 +8,7 @@ from recto.tui.app import RectoApp
 from recto.tui.decks import DecksScreen
 from recto.tui.importing import ImportScreen
 from tests.container import build_test_container
+from tests.fakes.fake_image_store import FakeImageStore
 from tests.fakes.fake_variant_generator import FakeVariantGenerator
 
 
@@ -57,6 +58,31 @@ async def test_unreadable_file_is_reported() -> None:
 
         assert isinstance(app.screen, ImportScreen)
         assert "Cannot read" in str(app.screen.query_one("#status", Static).content)
+        assert repository.decks() == []
+
+
+async def test_unusable_image_is_reported_and_saves_nothing(tmp_path: Path) -> None:
+    repository = InMemoryDeckRepository()
+    images = FakeImageStore()
+    images.rejects("images/a.png")
+    app = RectoApp(
+        build_test_container(deck_repository=providers.Object(repository), image_store=providers.Object(images))
+    )
+    deck = tmp_path / "espagnol.toml"
+    deck.write_text(
+        '[deck]\nname = "Espagnol"\ndescription = "Mots"\n\n'
+        '[[cards]]\nid = "a"\nquestion = "Q"\nanswer = "A"\nimage = "images/a.png"\n'
+    )
+
+    async with app.run_test() as pilot:
+        await pilot.press("i", "tab", *str(deck), "enter")
+        await app.workers.wait_for_complete()
+        await pilot.pause()
+
+        assert isinstance(app.screen, ImportScreen)
+        status = str(app.screen.query_one("#status", Static).content)
+        assert status == "Import failed: Image images/a.png: not found"
+        assert images.requests == [(tmp_path, "images/a.png")]
         assert repository.decks() == []
 
 

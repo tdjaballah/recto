@@ -70,6 +70,13 @@ def test_deck_id_is_the_file_name(tmp_path: Path) -> None:
     assert read_deck_file(f"  {tmp_path / 'espagnol.toml'} ").deck.id == "espagnol"
 
 
+def test_deck_file_knows_its_folder(tmp_path: Path) -> None:
+    (tmp_path / "espagnol.toml").write_text(VALID, encoding="utf-8")
+
+    assert read_deck_file(str(tmp_path / "espagnol.toml")).directory == tmp_path
+    assert parse_deck("espagnol", VALID).directory is None
+
+
 def test_missing_file_is_an_invalid_deck(tmp_path: Path) -> None:
     with pytest.raises(InvalidDeck, match="Cannot read"):
         read_deck_file(str(tmp_path / "nope.toml"))

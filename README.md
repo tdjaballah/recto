@@ -36,6 +36,7 @@ Each deck brings 10 new cards a day. Once they and the day's reviews are done, r
 | `OPENAI_API_KEY` | | Required: recto won't start without it |
 | `RECTO_MODEL` | `gpt-5.4-mini` | Any [OpenAI model name](https://platform.openai.com/docs/models) |
 | `RECTO_DB` | the user data directory | Where reviews and variants are kept |
+| `RECTO_IMAGES` | the user data directory | Where the copies of the card images are kept |
 
 ## Write a deck
 
@@ -51,16 +52,16 @@ question = "Quel cépage domine les vins blancs de Chablis ?"
 answer = "Chardonnay"
 ```
 
-The file name is the deck id: importing `vins.toml` again updates the same deck. `instructions` is optional and is given to the model when it writes variants and grades answers. Each card needs an `id`, unique in the deck. A card may also have an `image`: the path of a picture, relative to the deck file. Fixing a typo in a question keeps the card's history and regenerates its variants; changing its `id` starts it over. Cards removed from the file are removed from the deck.
+The file name is the deck id: importing `vins.toml` again updates the same deck. `instructions` is optional and is given to the model when it writes variants and grades answers. Each card needs an `id`, unique in the deck. A card may also have an `image`: the path of a PNG or JPEG of at most 5 MB, relative to the deck file and inside its folder. Recto keeps its own copy of it, made when the deck is imported. Fixing a typo in a question keeps the card's history and regenerates its variants; changing its `id` starts it over. Cards removed from the file are removed from the deck.
 
 ## How the code is organized
 
 ```
 src/recto/
   domain/      cards, variants, grades, FSRS memory, today's cards, what a re-import changes
-  ports/       what the app needs from outside: a deck repository, a variant generator, an answer judge, a clock
+  ports/       what the app needs from outside: a deck repository, an image store, a variant generator, an answer judge, a clock
   use_cases/   one class per action: import a deck, list decks, next card, submit an answer, manage variants
-  adapters/    SQLite, PydanticAI, the TOML deck files, the system clock, an in-memory repository
+  adapters/    SQLite, PydanticAI, the TOML deck files, the image files, the system clock, an in-memory repository
   tui/         Textual screens, calling use cases only
   decks/       the four example decks
   container.py the one place where adapters are plugged into ports

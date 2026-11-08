@@ -1,4 +1,5 @@
 import tomllib
+from dataclasses import replace
 from importlib.resources import files
 from pathlib import Path
 from typing import Any
@@ -19,7 +20,7 @@ def read_deck_file(raw_path: str) -> DeckFile:
         text = path.read_text(encoding="utf-8")
     except (OSError, RuntimeError, ValueError) as error:
         raise InvalidDeck(f"Cannot read {raw_path.strip()}") from error
-    return parse_deck(path.stem, text)
+    return replace(parse_deck(path.stem, text), directory=path.parent)
 
 
 def parse_deck(deck_id: str, text: str) -> DeckFile:

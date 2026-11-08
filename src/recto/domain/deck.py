@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass(frozen=True)
@@ -21,3 +22,4 @@ class SourceCard:
 class DeckFile:
     deck: Deck
     cards: tuple[SourceCard, ...]
+    directory: Path | None = None  # where the card images are looked for
