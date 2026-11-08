@@ -1,10 +1,12 @@
 import sqlite3
+import threading
+import time
 from contextlib import closing
 from dataclasses import replace
 from datetime import timedelta
 from pathlib import Path
 
-from recto.adapters.sqlite_deck_repository import SqliteDeckRepository
+from recto.adapters.sqlite_deck_repository import MIGRATIONS, SqliteDeckRepository
 from recto.domain.deck import Deck
 from recto.domain.grading import Grade, Rating
 from recto.domain.knowledge import Variant
@@ -17,6 +19,11 @@ REPHRASED = Variant("rephrased", "Quelle ville est la capitale française ?", "P
 
 def setup(tmp_path: Path) -> SqliteDeckRepository:
     return SqliteDeckRepository(tmp_path / "data" / "recto.db")
+
+
+def user_version(path: Path) -> int:
+    with closing(sqlite3.connect(path)) as conn:
+        return conn.execute("PRAGMA user_version").fetchone()[0]
 
 
 def review_of(knowledge_id: str) -> Review:
@@ -66,6 +73,20 @@ def test_saving_the_deck_again_keeps_the_reviews_of_the_knowledge_it_keeps(tmp_p
     assert repository.reviews("geographie", "france") == [review_of("france")]
 
 
+def test_image_reference_is_saved_changed_and_removed_without_losing_progress(tmp_path: Path) -> None:
+    repository = setup(tmp_path)
+    france = KnowledgeMother.due().with_image("a.png").build()
+    repository.save_deck(GEOGRAPHY, [france])
+    repository.add_review(review_of("france"))
+    assert repository.get_knowledge("geographie", "france") == france
+
+    for image in ("b.png", None):
+        repository.save_deck(GEOGRAPHY, [replace(france, image=image)])
+
+        assert repository.get_knowledge("geographie", "france") == replace(france, image=image)
+        assert repository.reviews("geographie", "france") == [review_of("france")]
+
+
 def test_knowledge_left_out_of_the_deck_is_deleted_with_its_reviews(tmp_path: Path) -> None:
     repository = setup(tmp_path)
     france = KnowledgeMother.due().build()
@@ -107,10 +128,59 @@ def test_database_of_an_older_version_still_opens(tmp_path: Path) -> None:
     france = KnowledgeMother.due().build()
     SqliteDeckRepository(path).save_deck(GEOGRAPHY, [france])
     with closing(sqlite3.connect(path)) as conn:
-        conn.execute("DROP TABLE extra_new")
+        conn.executescript("DROP TABLE extra_new; ALTER TABLE knowledge DROP COLUMN image; PRAGMA user_version = 0")
 
     repository = SqliteDeckRepository(path)
     repository.add_extra_new("geographie", NOW.date(), 10)
+    repository.save_knowledge(replace(france, image="a.png"))
 
-    assert repository.knowledge("geographie") == [france]
     assert repository.extra_new("geographie", NOW.date()) == 10
+    assert repository.knowledge("geographie") == [replace(france, image="a.png")]
+
+
+def test_opened_database_is_at_the_latest_version(tmp_path: Path) -> None:
+    path = tmp_path / "data" / "recto.db"
+
+    SqliteDeckRepository(path)
+    SqliteDeckRepository(path)
+
+    assert user_version(path) == len(MIGRATIONS)
+
+
+def test_database_of_a_newer_version_keeps_its_version(tmp_path: Path) -> None:
+    path = tmp_path / "data" / "recto.db"
+    SqliteDeckRepository(path)
+    with closing(sqlite3.connect(path)) as conn:
+        conn.execute(f"PRAGMA user_version = {len(MIGRATIONS) + 1}")
+
+    SqliteDeckRepository(path)
+
+    assert user_version(path) == len(MIGRATIONS) + 1
+
+
+def test_database_migrated_meanwhile_by_another_opening_is_migrated_once(tmp_path: Path) -> None:
+    path = tmp_path / "data" / "recto.db"
+    SqliteDeckRepository(path)
+    with closing(sqlite3.connect(path)) as conn:
+        conn.executescript(f"ALTER TABLE knowledge DROP COLUMN image; PRAGMA user_version = {len(MIGRATIONS) - 1}")
+    other = sqlite3.connect(path, autocommit=True)
+    other.execute("BEGIN IMMEDIATE")
+    other.execute("ALTER TABLE knowledge ADD COLUMN image TEXT")
+    errors: list[Exception] = []
+
+    def open_meanwhile() -> None:
+        try:
+            SqliteDeckRepository(path)
+        except sqlite3.Error as error:
+            errors.append(error)
+
+    opening = threading.Thread(target=open_meanwhile)
+    opening.start()
+    time.sleep(0.2)
+    other.execute(f"PRAGMA user_version = {len(MIGRATIONS)}")
+    other.execute("COMMIT")
+    other.close()
+    opening.join()
+
+    assert errors == []
+    assert user_version(path) == len(MIGRATIONS)
