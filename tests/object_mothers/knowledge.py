@@ -42,6 +42,10 @@ class KnowledgeMother:
         self._knowledge = self._knowledge.with_variants(*variants)
         return self
 
+    def with_image(self, image: str | None) -> Self:
+        self._knowledge = replace(self._knowledge, image=image)
+        return self
+
     def due_at(self, when: datetime) -> Self:
         memory = self._knowledge.memory or _learnt(when - timedelta(days=3))
         self._knowledge = replace(self._knowledge, memory=replace(memory, due=when))

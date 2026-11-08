@@ -57,15 +57,20 @@ CREATE TABLE IF NOT EXISTS extra_new (
 );
 """
 
-type KnowledgeRow = tuple[str, str, int, str | None, str | None, str | None]
+# Run once each, in order; a database keeps in PRAGMA user_version how many it has run. Only ever append a step.
+MIGRATIONS = (
+    SCHEMA,
+    "ALTER TABLE knowledge ADD COLUMN image TEXT;",
+)
+
+type KnowledgeRow = tuple[str, str, int, str | None, str | None, str | None, str | None]
 
 
 class SqliteDeckRepository(DeckRepository):
     def __init__(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         self._path = path
-        with self._connection() as conn:
-            conn.executescript(SCHEMA)
+        _migrate(path)
 
     def save_deck(self, deck: Deck, knowledge: Sequence[Knowledge]) -> None:
         with self._connection() as conn:
@@ -96,7 +101,7 @@ class SqliteDeckRepository(DeckRepository):
     def knowledge(self, deck_id: str) -> list[Knowledge]:
         with self._connection() as conn:
             rows = conn.execute(
-                "SELECT deck_id, id, position, due, introduced_at, fsrs_card FROM knowledge "
+                "SELECT deck_id, id, position, due, introduced_at, fsrs_card, image FROM knowledge "
                 "WHERE deck_id = ? ORDER BY position",
                 (deck_id,),
             ).fetchall()
@@ -105,7 +110,7 @@ class SqliteDeckRepository(DeckRepository):
     def get_knowledge(self, deck_id: str, knowledge_id: str) -> Knowledge | None:
         with self._connection() as conn:
             row = conn.execute(
-                "SELECT deck_id, id, position, due, introduced_at, fsrs_card FROM knowledge "
+                "SELECT deck_id, id, position, due, introduced_at, fsrs_card, image FROM knowledge "
                 "WHERE deck_id = ? AND id = ?",
                 (deck_id, knowledge_id),
             ).fetchone()
@@ -174,12 +179,22 @@ class SqliteDeckRepository(DeckRepository):
                 yield conn
 
 
+def _migrate(path: Path) -> None:
+    with closing(sqlite3.connect(path, autocommit=True)) as conn:
+        conn.execute("BEGIN IMMEDIATE")  # another opening waits here rather than running the same steps
+        version = conn.execute("PRAGMA user_version").fetchone()[0]
+        for number, step in enumerate(MIGRATIONS[version:], start=version + 1):
+            conn.executescript(step)
+            conn.execute(f"PRAGMA user_version = {number}")
+        conn.execute("COMMIT")
+
+
 def _write_knowledge(conn: sqlite3.Connection, knowledge: Knowledge) -> None:
     memory = knowledge.memory
     conn.execute(
-        "INSERT INTO knowledge VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT (deck_id, id) DO UPDATE SET "
+        "INSERT INTO knowledge VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT (deck_id, id) DO UPDATE SET "
         "position = excluded.position, due = excluded.due, introduced_at = excluded.introduced_at, "
-        "fsrs_card = excluded.fsrs_card",
+        "fsrs_card = excluded.fsrs_card, image = excluded.image",
         (
             knowledge.deck_id,
             knowledge.id,
@@ -187,6 +202,7 @@ def _write_knowledge(conn: sqlite3.Connection, knowledge: Knowledge) -> None:
             memory.due.isoformat() if memory else None,
             memory.introduced_at.isoformat() if memory else None,
             memory.fsrs_card if memory else None,
+            knowledge.image,
         ),
     )
     conn.execute("DELETE FROM variants WHERE deck_id = ? AND knowledge_id = ?", (knowledge.deck_id, knowledge.id))
@@ -200,7 +216,7 @@ def _write_knowledge(conn: sqlite3.Connection, knowledge: Knowledge) -> None:
 
 
 def _to_knowledge(conn: sqlite3.Connection, row: KnowledgeRow) -> Knowledge:
-    deck_id, knowledge_id, position, due, introduced_at, fsrs_card = row
+    deck_id, knowledge_id, position, due, introduced_at, fsrs_card, image = row
     variants = conn.execute(
         "SELECT id, question, answer FROM variants WHERE deck_id = ? AND knowledge_id = ? ORDER BY position",
         (deck_id, knowledge_id),
@@ -216,4 +232,5 @@ def _to_knowledge(conn: sqlite3.Connection, row: KnowledgeRow) -> Knowledge:
         position=position,
         variants=tuple(Variant(*variant) for variant in variants),
         memory=memory,
+        image=image,
     )
