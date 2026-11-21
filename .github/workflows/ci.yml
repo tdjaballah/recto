@@ -14,7 +14,7 @@ jobs:
         python: ["3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.3.3
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
           python-version: ${{ matrix.python }}
       - run: uv sync --locked
@@ -22,7 +22,7 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ty check
       - run: uv run pytest --junitxml=junit.xml -o junit_family=xunit1
-      - uses: mikepenz/action-junit-report@v6.7.0
+      - uses: mikepenz/action-junit-report@v6.7.1
         if: ${{ !cancelled() }}
         with:
           report_paths: junit.xml
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.3.3
+      - uses: astral-sh/setup-uv@v10.4.0
       - run: uv build
       - run: uvx twine check --strict dist/*
 
@@ -48,7 +48,7 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.3.3
+      - uses: astral-sh/setup-uv@v10.4.0
       - name: Release the version if it is new
         env:
           GH_TOKEN: ${{ github.token }}
